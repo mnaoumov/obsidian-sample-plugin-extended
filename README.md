@@ -12,7 +12,7 @@ It is better to use [Obsidian Plugin Yeoman Generator](https://github.com/mnaoum
 
 You can use `GitHub`'s `Use this template` button to create your copy of this repo.
 
-Don't forget to text search for all of all `Sample` words and replace them accordingly.
+Don't forget to text search for all `Sample` words and replace them accordingly.
 
 ## Features
 
