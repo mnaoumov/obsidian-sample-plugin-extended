@@ -19,12 +19,12 @@ import { prompt } from 'obsidian-dev-utils/obsidian/Modals/Prompt';
 import { selectItem } from 'obsidian-dev-utils/obsidian/Modals/SelectItem';
 import { PluginBase } from 'obsidian-dev-utils/obsidian/Plugin/PluginBase';
 
-import { SamplePluginExtendedPluginSettings } from './SamplePluginExtendedPluginSettings.ts';
-import { SamplePluginExtendedPluginSettingsTab } from './SamplePluginExtendedPluginSettingsTab.ts';
 import { sampleStateField } from './EditorExtensions/SampleStateField.ts';
 import { sampleViewPlugin } from './EditorExtensions/SampleViewPlugin.ts';
 import { SampleEditorSuggest } from './EditorSuggests/SampleEditorSuggest.ts';
 import { SampleModal } from './Modals/SampleModal.ts';
+import { SamplePluginExtendedPluginSettings } from './SamplePluginExtendedPluginSettings.ts';
+import { SamplePluginExtendedPluginSettingsTab } from './SamplePluginExtendedPluginSettingsTab.ts';
 import {
   SAMPLE_REACT_VIEW_TYPE,
   SampleReactView
