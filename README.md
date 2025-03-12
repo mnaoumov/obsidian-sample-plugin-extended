@@ -1,23 +1,22 @@
 # Sample Plugin Extended
 
-This is a plugin for [Obsidian](https://obsidian.md/) that Sample Description.
+This is a sample plugin for [Obsidian](https://obsidian.md/), more advanced version of the original [Obsidian Sample Plugin](https://github.com/obsidianmd/obsidian-sample-plugin/).
 
-## Installation
+## Usage
 
-- The plugin is not available in [the official Community Plugins repository](https://obsidian.md/plugins) yet.
-- [Beta releases](obsidian://brat?plugin=https://github.com/sampleAuthorGitHubName/obsidian-sample-plugin-extended) can be installed via [BRAT](https://obsidian.md/plugins?id=obsidian42-brat).
+### Generator (recommended)
 
-## Debugging
+It is better to use [Obsidian Plugin Yeoman Generator](https://github.com/mnaoumov/generator-obsidian-plugin) to generate customized version of the plugin.
 
-By default, debug messages for this plugin are hidden.
+### Template
 
-To show them, run the following command:
+You can use `GitHub`'s `Use this template` button to create your copy of this repo.
 
-```js
-window.DEBUG.enable('sample-plugin-extended');
-```
+Don't forget to text search for all of all `Sample` words and replace them accordingly.
 
-For more details, refer to the [documentation](https://github.com/mnaoumov/obsidian-dev-utils?tab=readme-ov-file#debugging).
+## Features
+
+See [Obsidian Plugin Yeoman Generator](https://github.com/mnaoumov/generator-obsidian-plugin) for detailed list of features.
 
 ## License
 
