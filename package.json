@@ -31,11 +31,11 @@
     "jiti": "^2.4.2",
     "moment": "^2.30.1",
     "obsidian": "^1.8.7",
-    "obsidian-dev-utils": "^23.0.5",
+    "obsidian-dev-utils": "^24.0.1",
     "obsidian-typings": "^2.41.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "svelte": "^5.25.7",
+    "svelte": "^5.25.8",
     "type-fest": "^4.39.1"
   },
   "overrides": {
