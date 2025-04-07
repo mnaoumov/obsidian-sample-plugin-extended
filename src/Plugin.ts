@@ -8,8 +8,7 @@ import type {
 
 import {
   MarkdownView,
-  Notice,
-  PluginSettingTab
+  Notice
 } from 'obsidian';
 import { convertAsyncToSync } from 'obsidian-dev-utils/Async';
 import { getDebugger } from 'obsidian-dev-utils/Debug';
@@ -19,12 +18,14 @@ import { prompt } from 'obsidian-dev-utils/obsidian/Modals/Prompt';
 import { selectItem } from 'obsidian-dev-utils/obsidian/Modals/SelectItem';
 import { PluginBase } from 'obsidian-dev-utils/obsidian/Plugin/PluginBase';
 
+import type { PluginTypes } from './PluginTypes.ts';
+
 import { sampleStateField } from './EditorExtensions/SampleStateField.ts';
 import { sampleViewPlugin } from './EditorExtensions/SampleViewPlugin.ts';
 import { SampleEditorSuggest } from './EditorSuggests/SampleEditorSuggest.ts';
 import { SampleModal } from './Modals/SampleModal.ts';
-import { SamplePluginExtendedPluginSettings } from './SamplePluginExtendedPluginSettings.ts';
-import { SamplePluginExtendedPluginSettingsTab } from './SamplePluginExtendedPluginSettingsTab.ts';
+import { PluginSettingsManager } from './PluginSettingsManager.ts';
+import { PluginSettingsTab } from './PluginSettingsTab.ts';
 import {
   SAMPLE_REACT_VIEW_TYPE,
   SampleReactView
@@ -38,23 +39,25 @@ import {
   SampleView
 } from './Views/SampleView.ts';
 
-export class SamplePluginExtendedPlugin extends PluginBase<SamplePluginExtendedPluginSettings> {
-  protected override createPluginSettings(data: unknown): SamplePluginExtendedPluginSettings {
-    return new SamplePluginExtendedPluginSettings(data);
+export class Plugin extends PluginBase<PluginTypes> {
+  protected override createPluginSettingsTab(): null | PluginSettingsTab {
+    return new PluginSettingsTab(this);
   }
 
-  protected override createPluginSettingsTab(): null | PluginSettingTab {
-    return new SamplePluginExtendedPluginSettingsTab(this);
+  protected override createSettingsManager(): PluginSettingsManager {
+    return new PluginSettingsManager(this);
   }
 
   protected override async onLayoutReady(): Promise<void> {
+    await super.onLayoutReady();
     new Notice('This is executed after all plugins are loaded');
     await this.openView(SAMPLE_VIEW_TYPE);
     await this.openView(SAMPLE_SVELTE_VIEW_TYPE);
     await this.openView(SAMPLE_REACT_VIEW_TYPE);
   }
 
-  protected override onloadComplete(): void {
+  protected override async onloadImpl(): Promise<void> {
+    await super.onloadImpl();
     this.addCommand({
       callback: this.runSampleCommand.bind(this),
       id: 'sample-command',
