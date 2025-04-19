@@ -28,6 +28,14 @@ export class PluginSettingsTab extends PluginSettingsTabBase<PluginTypes> {
       });
 
     new SettingEx(this.containerEl)
+      .setName('Code Highlighter Setting Name')
+      .setDesc('Code Highlighter Setting Description.')
+      .addCodeHighlighter((codeHighlighter) => {
+        codeHighlighter.setLanguage('javascript');
+        this.bind(codeHighlighter, 'codeHighlighterSetting');
+      });
+
+    new SettingEx(this.containerEl)
       .setName('Color Setting Name')
       .setDesc('Color Setting Description.')
       .addColorPicker((color) => {
