@@ -219,7 +219,7 @@ export class PluginSettingsTab extends PluginSettingsTabBase<PluginTypes> {
       });
 
     new SettingEx(this.containerEl)
-      .setName('Typed Dropdown Setting Name')
+      .setName('Typed Multiple Dropdown Setting Name')
       .setDesc('Typed Multiple Dropdown Setting Description.')
       .addTypedMultipleDropdown((typedMultipleDropdown) => {
         const map = new Map<TypedItem, string>();
