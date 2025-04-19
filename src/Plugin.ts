@@ -2,8 +2,7 @@ import type {
   Editor,
   MarkdownPostProcessorContext,
   ObsidianProtocolData,
-  TAbstractFile,
-  WorkspaceLeaf
+  TAbstractFile
 } from 'obsidian';
 
 import {
