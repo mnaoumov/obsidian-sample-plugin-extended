@@ -6,7 +6,7 @@ import type {
 } from 'obsidian';
 import type { ExtractPluginSettingsWrapper } from 'obsidian-dev-utils/obsidian/Plugin/PluginTypesBase';
 import type { MaybeReturn } from 'obsidian-dev-utils/Type';
-import type { ReadonlyObjectDeep } from 'type-fest/source/readonly-deep.js';
+import type { ReadonlyDeep } from 'type-fest';
 
 import {
   MarkdownView,
@@ -114,7 +114,7 @@ export class Plugin extends PluginBase<PluginTypes> {
   }
 
   protected override async onLoadSettings(
-    loadedSettings: ReadonlyObjectDeep<ExtractPluginSettingsWrapper<PluginTypes>>,
+    loadedSettings: ReadonlyDeep<ExtractPluginSettingsWrapper<PluginTypes>>,
     isInitialLoad: boolean
   ): Promise<void> {
     await super.onLoadSettings(loadedSettings, isInitialLoad);
@@ -124,8 +124,8 @@ export class Plugin extends PluginBase<PluginTypes> {
   }
 
   protected override async onSaveSettings(
-    newSettings: ReadonlyObjectDeep<ExtractPluginSettingsWrapper<PluginTypes>>,
-    oldSettings: ReadonlyObjectDeep<ExtractPluginSettingsWrapper<PluginTypes>>,
+    newSettings: ReadonlyDeep<ExtractPluginSettingsWrapper<PluginTypes>>,
+    oldSettings: ReadonlyDeep<ExtractPluginSettingsWrapper<PluginTypes>>,
     context: unknown
   ): Promise<void> {
     await super.onSaveSettings(newSettings, oldSettings, context);
