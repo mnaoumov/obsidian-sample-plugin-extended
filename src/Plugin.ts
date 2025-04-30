@@ -4,7 +4,9 @@ import type {
   ObsidianProtocolData,
   TAbstractFile
 } from 'obsidian';
+import type { ExtractPluginSettingsWrapper } from 'obsidian-dev-utils/obsidian/Plugin/PluginTypesBase';
 import type { MaybeReturn } from 'obsidian-dev-utils/Type';
+import type { ReadonlyObjectDeep } from 'type-fest/source/readonly-deep.js';
 
 import {
   MarkdownView,
@@ -109,6 +111,32 @@ export class Plugin extends PluginBase<PluginTypes> {
     this.registerView(SAMPLE_REACT_VIEW_TYPE, (leaf) => new SampleReactView(leaf));
 
     this.registerModalCommands();
+  }
+
+  protected override async onLoadSettings(
+    loadedSettings: ReadonlyObjectDeep<ExtractPluginSettingsWrapper<PluginTypes>>,
+    isInitialLoad: boolean
+  ): Promise<void> {
+    await super.onLoadSettings(loadedSettings, isInitialLoad);
+    if (loadedSettings.settings.textSetting === 'bar') {
+      new Notice('Sample text setting is bar');
+    }
+  }
+
+  protected override async onSaveSettings(
+    newSettings: ReadonlyObjectDeep<ExtractPluginSettingsWrapper<PluginTypes>>,
+    oldSettings: ReadonlyObjectDeep<ExtractPluginSettingsWrapper<PluginTypes>>,
+    context: unknown
+  ): Promise<void> {
+    await super.onSaveSettings(newSettings, oldSettings, context);
+    if (newSettings.settings.textSetting === 'baz' && oldSettings.settings.textSetting === 'bar') {
+      new Notice('Sample text setting is changed from bar to baz');
+    }
+  }
+
+  protected override async onunloadImpl(): Promise<void> {
+    await super.onunloadImpl();
+    new Notice('Sample plugin is being unloaded');
   }
 
   private handleSampleCodeBlockProcessor(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext): void {
