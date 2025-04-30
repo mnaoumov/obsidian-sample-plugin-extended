@@ -4,6 +4,7 @@ import type {
   ObsidianProtocolData,
   TAbstractFile
 } from 'obsidian';
+import type { MaybeReturn } from 'obsidian-dev-utils/Type';
 
 import {
   MarkdownView,
@@ -228,8 +229,7 @@ export class Plugin extends PluginBase<PluginTypes> {
       defaultValue: 'Sample prompt default value',
       placeholder: 'Sample prompt placeholder',
       title: 'Sample prompt title',
-      // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-      valueValidator: (value): string | void => {
+      valueValidator: (value): MaybeReturn<string> => {
         const MIN_LENGTH = 30;
         if (value.length < MIN_LENGTH) {
           return `Value must be at least ${MIN_LENGTH.toString()} characters long`;
