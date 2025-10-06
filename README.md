@@ -20,4 +20,4 @@ See [Obsidian Plugin Yeoman Generator](https://github.com/mnaoumov/generator-obs
 
 ## License
 
-© [SampleFirstName SampleLastName](https://github.com/sampleAuthorGitHubName/)
+© SampleFirstName SampleLastName
