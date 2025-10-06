@@ -17,13 +17,15 @@
     "format:check": "obsidian-dev-utils format:check",
     "lint": "obsidian-dev-utils lint",
     "lint:fix": "obsidian-dev-utils lint:fix",
+    "lint:md": "obsidian-dev-utils lint:md",
+    "lint:md:fix": "obsidian-dev-utils lint:md:fix",
     "spellcheck": "obsidian-dev-utils spellcheck",
     "version": "obsidian-dev-utils version"
   },
   "devDependencies": {
     "@codemirror/language": "^6.11.3",
-    "@codemirror/state": "^6.5.2",
-    "@codemirror/view": "^6.38.4",
+    "@codemirror/state": "6.5.0",
+    "@codemirror/view": "6.38.1",
     "@tsconfig/strictest": "latest",
     "@types/node": "latest",
     "@types/react": "^19.1.15",
@@ -35,12 +37,12 @@
     "obsidian-typings": "obsidian-public-latest",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "svelte": "^5.39.6",
-    "type-fest": "^5.0.1"
+    "svelte": "^5.39.6"
   },
   "overrides": {
     "@antfu/utils": "9.2.0",
     "boolean": "npm:dry-uninstall",
-    "dompurify": "3.0.1"
+    "dompurify": "3.0.1",
+    "type-fest": "latest"
   }
 }
