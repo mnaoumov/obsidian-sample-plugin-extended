@@ -56,6 +56,8 @@ export class Plugin extends PluginBase<PluginTypes> {
     await this.openView(SAMPLE_VIEW_TYPE);
     await this.openView(SAMPLE_SVELTE_VIEW_TYPE);
     await this.openView(SAMPLE_REACT_VIEW_TYPE);
+
+    const p = this.app.plugins;
   }
 
   protected override async onloadImpl(): Promise<void> {

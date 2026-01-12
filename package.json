@@ -27,17 +27,17 @@
     "@codemirror/state": "6.5.0",
     "@codemirror/view": "6.38.6",
     "@tsconfig/strictest": "latest",
-    "@types/node": "latest",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
+    "@types/node": "25.0.3",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
     "jiti": "latest",
     "moment": "2.29.4",
     "obsidian": "latest",
     "obsidian-dev-utils": "latest",
     "obsidian-typings": "obsidian-public-latest",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "svelte": "^5.43.14"
+    "react": "latest",
+    "react-dom": "latest",
+    "svelte": "latest"
   },
   "overrides": {
     "@antfu/utils": "9.2.0",

@@ -20,7 +20,8 @@
     "target": "ES2024",
     "types": [
       "node",
-      "svelte"
+      "svelte",
+      "obsidian-typings"
     ],
     "verbatimModuleSyntax": true
   },
