@@ -13,15 +13,17 @@
       "DOM",
       "ES2024"
     ],
+    "libReplacement": true,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "noEmit": true,
     "skipLibCheck": false,
     "target": "ES2024",
     "types": [
+      "@total-typescript/ts-reset",
       "node",
-      "svelte",
-      "obsidian-typings"
+      "obsidian-typings",
+      "svelte"
     ],
     "verbatimModuleSyntax": true
   },
