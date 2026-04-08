@@ -15,9 +15,9 @@ import {
 import { convertAsyncToSync } from 'obsidian-dev-utils/async';
 import { getDebugger } from 'obsidian-dev-utils/debug';
 import { alert } from 'obsidian-dev-utils/obsidian/modals/alert';
-import { confirm } from 'obsidian-dev-utils/obsidian/Modals/Confirm';
-import { prompt } from 'obsidian-dev-utils/obsidian/Modals/Prompt';
-import { selectItem } from 'obsidian-dev-utils/obsidian/Modals/SelectItem';
+import { confirm } from 'obsidian-dev-utils/obsidian/modals/confirm';
+import { prompt } from 'obsidian-dev-utils/obsidian/modals/prompt';
+import { selectItem } from 'obsidian-dev-utils/obsidian/modals/select-item';
 import { PluginBase } from 'obsidian-dev-utils/obsidian/plugin/plugin-base';
 
 import type { PluginTypes } from './PluginTypes.ts';

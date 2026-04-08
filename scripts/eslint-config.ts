@@ -11,8 +11,8 @@ export const configs: Linter.Config[] = defineEslintConfigs({
           'error',
           {
             brands: [
-            'React',
-            'Svelte'
+              'React',
+              'Svelte'
             ]
           }
         ]
