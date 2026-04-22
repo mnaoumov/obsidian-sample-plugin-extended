@@ -5,9 +5,9 @@ import { AppContext } from 'obsidian-dev-utils/obsidian/react/app-context';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import type { SampleReactComponentProps } from '../ReactComponents/SampleReactComponent.tsx';
+import type { SampleReactComponentProps } from '../react-components/sample-react-component.tsx';
 
-import { SampleReactComponent } from '../ReactComponents/SampleReactComponent.tsx';
+import { SampleReactComponent } from '../react-components/sample-react-component.tsx';
 
 export const SAMPLE_REACT_VIEW_TYPE = 'sample-plugin-extended-SampleReactView';
 

@@ -1,12 +1,12 @@
 import { Notice } from 'obsidian';
-import { PluginSettingsTabBase } from 'obsidian-dev-utils/obsidian/plugin/plugin-settings-tab-base';
+import { PluginSettingsTabBase } from 'obsidian-dev-utils/obsidian/plugin/plugin-settings-tab';
 import { SettingEx } from 'obsidian-dev-utils/obsidian/setting-ex';
 
-import type { PluginTypes } from './PluginTypes.ts';
+import type { PluginSettings } from './plugin-settings.ts';
 
-import { TypedItem } from './PluginSettings.ts';
+import { TypedItem } from './plugin-settings.ts';
 
-export class PluginSettingsTab extends PluginSettingsTabBase<PluginTypes> {
+export class PluginSettingsTab extends PluginSettingsTabBase<PluginSettings> {
   public override display(): void {
     super.display();
     this.containerEl.empty();
@@ -159,7 +159,7 @@ export class PluginSettingsTab extends PluginSettingsTabBase<PluginTypes> {
       .setName('Progress bar setting name')
       .setDesc('Progress bar setting description.')
       .addProgressBar((progressBar) => {
-        progressBar.setValue(this.plugin.settings.progressBarSetting);
+        progressBar.setValue(this.pluginSettingsComponent.settings.progressBarSetting);
       });
 
     new SettingEx(this.containerEl)

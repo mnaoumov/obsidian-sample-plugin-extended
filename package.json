@@ -35,7 +35,7 @@
     "jiti": "latest",
     "nano-staged": "latest",
     "obsidian": "latest",
-    "obsidian-dev-utils": "latest",
+    "obsidian-dev-utils": "^57.0.2",
     "obsidian-typings": "obsidian-public-latest",
     "react": "latest",
     "react-dom": "latest",

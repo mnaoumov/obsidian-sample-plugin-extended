@@ -1,6 +1,6 @@
 import type { Extension } from '@codemirror/state';
 import type { DecorationSet } from '@codemirror/view';
-import type { StateFieldSpec } from 'obsidian-dev-utils/codemirror/StateFieldSpec';
+import type { StateFieldSpec } from 'obsidian-dev-utils/codemirror/state-field-spec';
 
 import { syntaxTree } from '@codemirror/language';
 import {
@@ -13,7 +13,7 @@ import {
   EditorView
 } from '@codemirror/view';
 
-import { SampleWidget } from './SampleWidget.ts';
+import { SampleWidget } from './sample-widget.ts';
 
 class SampleStateField implements StateFieldSpec<DecorationSet> {
   public create(): DecorationSet {
