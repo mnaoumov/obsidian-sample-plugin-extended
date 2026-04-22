@@ -13,7 +13,7 @@ import {
   ViewUpdate
 } from '@codemirror/view';
 
-import { SampleWidget } from './SampleWidget.ts';
+import { SampleWidget } from './sample-widget.ts';
 
 class SampleViewPlugin implements PluginValue {
   public decorations: DecorationSet;

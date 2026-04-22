@@ -7,9 +7,9 @@ import {
 import type {
   SampleSvelteComponentExports,
   SampleSvelteComponentProps
-} from '../SvelteComponents/SampleSvelteComponent.d.ts';
+} from '../svelte-components/sample-svelte-component.d.ts';
 
-import SampleSvelteComponent from '../SvelteComponents/SampleSvelteComponent.svelte';
+import SampleSvelteComponent from '../svelte-components/sample-svelte-component.svelte';
 
 export const SAMPLE_SVELTE_VIEW_TYPE = 'sample-plugin-extended-SampleSvelteView';
 
