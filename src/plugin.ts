@@ -6,7 +6,6 @@ import type {
   PluginManifest,
   TAbstractFile
 } from 'obsidian';
-import type { PluginSettingsTabBase } from 'obsidian-dev-utils/obsidian/plugin/plugin-settings-tab';
 import type { MaybeReturn } from 'obsidian-dev-utils/type';
 
 import {
@@ -59,7 +58,7 @@ export class Plugin extends PluginBase {
         new PluginSettingsTab({
           plugin: this,
           pluginSettingsComponent: this.pluginSettingsComponent
-        }) as PluginSettingsTabBase<object>
+        })
       )
     });
   }
