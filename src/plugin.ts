@@ -45,19 +45,14 @@ export class Plugin extends PluginBase {
 
   public constructor(app: App, manifest: PluginManifest) {
     super(app, manifest);
-    this.pluginSettingsComponent = this.registerComponent({
-      component: new PluginSettingsComponent(this),
-      shouldPreload: true
-    });
-    this.registerComponent({
-      component: new PluginSettingsTabComponent(
-        this,
-        new PluginSettingsTab({
-          plugin: this,
-          pluginSettingsComponent: this.pluginSettingsComponent
-        })
-      )
-    });
+    this.pluginSettingsComponent = this.addChild(new PluginSettingsComponent(new PluginDataHandler(this)));
+    this.addChild(new PluginSettingsTabComponent({
+      plugin: this,
+      pluginSettingsTab: new PluginSettingsTab({
+        plugin: this,
+        pluginSettingsComponent: this.pluginSettingsComponent
+      })
+    }));
   }
 
   public override onunload(): void {
