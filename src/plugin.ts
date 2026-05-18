@@ -18,7 +18,7 @@ import { alert } from 'obsidian-dev-utils/obsidian/modals/alert';
 import { confirm } from 'obsidian-dev-utils/obsidian/modals/confirm';
 import { prompt } from 'obsidian-dev-utils/obsidian/modals/prompt';
 import { selectItem } from 'obsidian-dev-utils/obsidian/modals/select-item';
-import { PluginSettingsTabComponent } from 'obsidian-dev-utils/obsidian/plugin/components/plugin-settings-tab-component';
+import { PluginSettingsTabComponent } from 'obsidian-dev-utils/obsidian/components/plugin-settings-tab-component';
 import { PluginBase } from 'obsidian-dev-utils/obsidian/plugin/plugin';
 
 import { sampleStateField } from './editor-extensions/sample-state-field.ts';
