@@ -14,12 +14,14 @@ import {
 } from 'obsidian';
 import { convertAsyncToSync } from 'obsidian-dev-utils/async';
 import { getDebugger } from 'obsidian-dev-utils/debug';
+import { PluginSettingsTabComponent } from 'obsidian-dev-utils/obsidian/components/plugin-settings-tab-component';
+import { PluginDataHandler } from 'obsidian-dev-utils/obsidian/data-handler';
 import { alert } from 'obsidian-dev-utils/obsidian/modals/alert';
 import { confirm } from 'obsidian-dev-utils/obsidian/modals/confirm';
 import { prompt } from 'obsidian-dev-utils/obsidian/modals/prompt';
 import { selectItem } from 'obsidian-dev-utils/obsidian/modals/select-item';
-import { PluginSettingsTabComponent } from 'obsidian-dev-utils/obsidian/components/plugin-settings-tab-component';
 import { PluginBase } from 'obsidian-dev-utils/obsidian/plugin/plugin';
+import { PluginEventSourceImpl } from 'obsidian-dev-utils/obsidian/plugin/plugin-event-source';
 
 import { sampleStateField } from './editor-extensions/sample-state-field.ts';
 import { sampleViewPlugin } from './editor-extensions/sample-view-plugin.ts';
@@ -45,31 +47,26 @@ export class Plugin extends PluginBase {
 
   public constructor(app: App, manifest: PluginManifest) {
     super(app, manifest);
-    this.pluginSettingsComponent = this.addChild(new PluginSettingsComponent(new PluginDataHandler(this)));
-    this.addChild(new PluginSettingsTabComponent({
-      plugin: this,
-      pluginSettingsTab: new PluginSettingsTab({
-        plugin: this,
-        pluginSettingsComponent: this.pluginSettingsComponent
+    this.pluginSettingsComponent = this.addChild(
+      new PluginSettingsComponent({
+        dataHandler: new PluginDataHandler(this),
+        pluginEventSource: new PluginEventSourceImpl(this)
       })
-    }));
+    );
+    this.addChild(
+      new PluginSettingsTabComponent({
+        plugin: this,
+        pluginSettingsTab: new PluginSettingsTab({
+          plugin: this,
+          pluginSettingsComponent: this.pluginSettingsComponent
+        })
+      })
+    );
   }
 
-  public override onunload(): void {
-    super.onunload();
-    new Notice('Sample plugin is being unloaded');
-  }
-
-  protected override async onLayoutReady(): Promise<void> {
-    await super.onLayoutReady();
-    new Notice('This is executed after all plugins are loaded');
-    await this.openView(SAMPLE_VIEW_TYPE);
-    await this.openView(SAMPLE_SVELTE_VIEW_TYPE);
-    await this.openView(SAMPLE_REACT_VIEW_TYPE);
-  }
-
-  protected override async onloadImpl(): Promise<void> {
-    await super.onloadImpl();
+  public override async onload(): Promise<void> {
+    await super.onload();
+    this.app.workspace.onLayoutReady(convertAsyncToSync(this.onLayoutReady.bind(this)));
     this.addCommand({
       callback: this.runSampleCommand.bind(this),
       id: 'sample',
@@ -123,6 +120,11 @@ export class Plugin extends PluginBase {
     this.registerModalCommands();
   }
 
+  public override onunload(): void {
+    super.onunload();
+    new Notice('Sample plugin is being unloaded');
+  }
+
   private handleSampleCodeBlockProcessor(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext): void {
     getDebugger('handleSampleCodeBlockProcessor')(source, el, ctx);
     el.setText('Sample code block processor');
@@ -154,6 +156,13 @@ export class Plugin extends PluginBase {
 
   private handleSampleObsidianProtocolHandler(params: ObsidianProtocolData): void {
     new Notice(`Sample obsidian protocol handler: ${params.action}`);
+  }
+
+  private async onLayoutReady(): Promise<void> {
+    new Notice('This is executed after all plugins are loaded');
+    await this.openView(SAMPLE_VIEW_TYPE);
+    await this.openView(SAMPLE_SVELTE_VIEW_TYPE);
+    await this.openView(SAMPLE_REACT_VIEW_TYPE);
   }
 
   private async openView(viewType: string): Promise<void> {

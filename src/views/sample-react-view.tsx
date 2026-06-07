@@ -1,6 +1,7 @@
 import type { Root } from 'react-dom/client';
 
 import { ItemView } from 'obsidian';
+import { noopAsync } from 'obsidian-dev-utils/function';
 import { AppContext } from 'obsidian-dev-utils/obsidian/react/app-context';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -24,7 +25,7 @@ export class SampleReactView extends ItemView {
 
   public override async onClose(): Promise<void> {
     this.root?.unmount();
-    await Promise.resolve();
+    await noopAsync();
   }
 
   public override async onOpen(): Promise<void> {
@@ -42,6 +43,6 @@ export class SampleReactView extends ItemView {
       </StrictMode>
     );
 
-    await Promise.resolve();
+    await noopAsync();
   }
 }

@@ -1,4 +1,5 @@
 import { ItemView } from 'obsidian';
+import { noopAsync } from 'obsidian-dev-utils/function';
 import {
   mount,
   unmount
@@ -42,6 +43,6 @@ export class SampleSvelteView extends ItemView {
     }) as SampleSvelteComponentExports;
 
     this.sampleSvelteComponent.increment();
-    await Promise.resolve();
+    await noopAsync();
   }
 }
