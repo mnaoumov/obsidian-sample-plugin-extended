@@ -1,4 +1,6 @@
 import type { ReadonlyPluginSettingsState } from 'obsidian-dev-utils/obsidian/components/plugin-settings-component';
+import type { DataHandler } from 'obsidian-dev-utils/obsidian/data-handler';
+import type { PluginEventSource } from 'obsidian-dev-utils/obsidian/plugin/plugin-event-source';
 import type { MaybeReturn } from 'obsidian-dev-utils/type';
 import type { GenericObject } from 'obsidian-dev-utils/type-guards';
 
@@ -10,14 +12,22 @@ import {
   TypedItem
 } from './plugin-settings.ts';
 
+interface PluginSettingsComponentConstructorParams {
+  readonly dataHandler: DataHandler;
+  readonly pluginEventSource: PluginEventSource;
+}
+
 interface SerializedSettings {
   typedDropdownSetting: string;
   typedMultipleDropdownSetting: string[];
 }
 
 export class PluginSettingsComponent extends PluginSettingsComponentBase<PluginSettings> {
-  protected override createDefaultSettings(): PluginSettings {
-    return new PluginSettings();
+  public constructor(params: PluginSettingsComponentConstructorParams) {
+    super({
+      ...params,
+      pluginSettingsClass: PluginSettings
+    });
   }
 
   protected override async onLoadRecord(record: GenericObject): Promise<void> {
