@@ -60,4 +60,3 @@ npm run test:coverage
 
 - Base your PR on the `master` branch.
 - Ensure all checks pass (`lint`, `format:check`, `spellcheck`, `test`).
-

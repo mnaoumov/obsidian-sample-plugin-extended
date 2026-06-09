@@ -3,6 +3,7 @@
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/mnaoumov)
 [![GitHub release](https://img.shields.io/github/v/release/mnaoumov/obsidian-sample-plugin-extended)](https://github.com/mnaoumov/obsidian-sample-plugin-extended/releases)
 [![GitHub downloads](https://img.shields.io/github/downloads/mnaoumov/obsidian-sample-plugin-extended/total)](https://github.com/mnaoumov/obsidian-sample-plugin-extended/releases)
+[![Coverage: 100%](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://github.com/mnaoumov/obsidian-sample-plugin-extended)
 
 This is a sample plugin for [Obsidian](https://obsidian.md/), more advanced version of the original [Obsidian Sample Plugin](https://github.com/obsidianmd/obsidian-sample-plugin/).
 
