@@ -7,9 +7,9 @@ import type { PluginSettings } from './plugin-settings.ts';
 import { TypedItem } from './plugin-settings.ts';
 
 export class PluginSettingsTab extends PluginSettingsTabBase<PluginSettings> {
-  public override display(): void {
+  public override displayLegacy(): void {
     // eslint-disable-next-line @typescript-eslint/no-deprecated -- super.display() calls the PluginSettingsTabBase override; the inherited @deprecated tag on Obsidian's SettingTab.display propagates via TS getJsDocTags.
-    super.display();
+    super.displayLegacy();
     this.containerEl.empty();
 
     new SettingEx(this.containerEl)

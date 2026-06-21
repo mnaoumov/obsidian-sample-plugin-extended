@@ -1,9 +1,7 @@
 import type {
-  App,
   Editor,
   MarkdownPostProcessorContext,
   ObsidianProtocolData,
-  PluginManifest,
   TAbstractFile
 } from 'obsidian';
 import type { MaybeReturn } from 'obsidian-dev-utils/type';
@@ -43,10 +41,9 @@ import {
 } from './views/sample-view.ts';
 
 export class Plugin extends PluginBase {
-  private readonly pluginSettingsComponent: PluginSettingsComponent;
+  private pluginSettingsComponent!: PluginSettingsComponent;
 
-  public constructor(app: App, manifest: PluginManifest) {
-    super(app, manifest);
+  protected override onloadImpl(): void {
     this.pluginSettingsComponent = this.addChild(
       new PluginSettingsComponent({
         dataHandler: new PluginDataHandler(this),
@@ -62,10 +59,7 @@ export class Plugin extends PluginBase {
         })
       })
     );
-  }
 
-  public override async onload(): Promise<void> {
-    await super.onload();
     this.app.workspace.onLayoutReady(convertAsyncToSync(this.onLayoutReady.bind(this)));
     this.addCommand({
       callback: this.runSampleCommand.bind(this),

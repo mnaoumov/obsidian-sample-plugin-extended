@@ -231,7 +231,7 @@ describe('PluginSettingsTab', () => {
     boundKeys.length = 0;
     hoisted.mockNotice.mockClear();
     // eslint-disable-next-line @typescript-eslint/no-deprecated -- Testing display() which is deprecated but still used by PluginSettingsTabBase.
-    tab.display();
+    tab.displayLegacy();
   }
 
   it('should create an instance', () => {
