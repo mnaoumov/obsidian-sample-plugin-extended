@@ -1,6 +1,7 @@
-import type { WorkspaceLeaf } from 'obsidian';
-
-import { castTo } from 'obsidian-dev-utils/object-utils';
+import {
+  App,
+  WorkspaceLeaf
+} from 'obsidian-test-mocks/obsidian';
 import {
   describe,
   expect,
@@ -13,35 +14,11 @@ const hoisted = vi.hoisted(() => {
   const mockUnmount = vi.fn();
   const mockCreateRoot = vi.fn(() => ({ render: mockRender, unmount: mockUnmount }));
 
-  const ItemViewMock = class {
-    public app: unknown = {};
-    public contentEl: HTMLElement = activeDocument.createElement('div');
-    public leaf: unknown;
-
-    public constructor(leaf: unknown) {
-      this.leaf = leaf;
-    }
-  };
-
-  return { ItemViewMock, mockCreateRoot, mockRender, mockUnmount };
+  return { mockCreateRoot, mockRender, mockUnmount };
 });
-
-vi.mock('obsidian', () => ({
-  ItemView: hoisted.ItemViewMock
-}));
-
-vi.mock('react', () => ({
-  createElement: vi.fn((type: unknown, ...args: unknown[]) => ({ args, type })),
-  StrictMode: 'StrictMode'
-}));
 
 vi.mock('react-dom/client', () => ({
   createRoot: hoisted.mockCreateRoot
-}));
-
-vi.mock('obsidian-dev-utils/obsidian/react/app-context', () => ({
-  AppContext: { Provider: 'AppContextProvider' },
-  useApp: vi.fn()
 }));
 
 vi.mock('../react-components/sample-react-component.tsx', () => ({
@@ -62,7 +39,9 @@ describe('SAMPLE_REACT_VIEW_TYPE', () => {
 
 describe('SampleReactView', () => {
   function createView(): SampleReactView {
-    return new SampleReactView(castTo<WorkspaceLeaf>({}));
+    const app = App.createConfigured__();
+    const leaf = WorkspaceLeaf.create2__(app);
+    return new SampleReactView(leaf.asOriginalType3__());
   }
 
   it('should create an instance', () => {
@@ -108,7 +87,6 @@ describe('SampleReactView', () => {
     hoisted.mockRender.mockClear();
     const view = createView();
     await view.onOpen();
-    // Render is called with JSX output - just verify it was invoked
     expect(hoisted.mockRender).toHaveBeenCalledTimes(1);
   });
 });

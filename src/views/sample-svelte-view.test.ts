@@ -1,6 +1,7 @@
-import type { WorkspaceLeaf } from 'obsidian';
-
-import { castTo } from 'obsidian-dev-utils/object-utils';
+import {
+  App,
+  WorkspaceLeaf
+} from 'obsidian-test-mocks/obsidian';
 import {
   describe,
   expect,
@@ -23,21 +24,8 @@ const hoisted = vi.hoisted(() => {
   const mockMount = vi.fn(() => ({ increment: mockIncrement }));
   const mockUnmount = vi.fn();
 
-  const ItemViewMock = class {
-    public contentEl: HTMLElement = activeDocument.createElement('div');
-    public leaf: unknown;
-
-    public constructor(leaf: unknown) {
-      this.leaf = leaf;
-    }
-  };
-
-  return { ItemViewMock, mockIncrement, mockMount, mockUnmount };
+  return { mockIncrement, mockMount, mockUnmount };
 });
-
-vi.mock('obsidian', () => ({
-  ItemView: hoisted.ItemViewMock
-}));
 
 vi.mock('svelte', () => ({
   mount: hoisted.mockMount,
@@ -62,7 +50,9 @@ describe('SAMPLE_SVELTE_VIEW_TYPE', () => {
 
 describe('SampleSvelteView', () => {
   function createView(): SampleSvelteView {
-    return new SampleSvelteView(castTo<WorkspaceLeaf>({}));
+    const app = App.createConfigured__();
+    const leaf = WorkspaceLeaf.create2__(app);
+    return new SampleSvelteView(leaf.asOriginalType3__());
   }
 
   it('should create an instance', () => {

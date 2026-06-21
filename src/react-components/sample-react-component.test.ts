@@ -1,24 +1,23 @@
+import { AppContext } from 'obsidian-dev-utils/obsidian/react/app-context';
+import { App } from 'obsidian-test-mocks/obsidian';
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
 import {
   describe,
   expect,
-  it,
-  vi
+  it
 } from 'vitest';
 
-vi.mock('obsidian-dev-utils/obsidian/react/app-context', () => ({
-  AppContext: { Provider: vi.fn() },
-  useApp: vi.fn(() => ({ vault: { getName: vi.fn(() => 'TestVault') } }))
-}));
-
-// eslint-disable-next-line import-x/first, import-x/imports-first -- vi.mock must precede imports.
-import { createElement } from 'react';
-// eslint-disable-next-line import-x/first, import-x/imports-first -- vi.mock must precede imports.
-import { createRoot } from 'react-dom/client';
-
-// eslint-disable-next-line import-x/first, import-x/imports-first -- vi.mock must precede imports.
 import { SampleReactComponent } from './sample-react-component.tsx';
 
 const START_COUNT = 5;
+const VAULT_NAME = 'TestVault';
+
+function createAppWithVaultName(): App {
+  const app = App.createConfigured__();
+  app.vault.getName = (): string => VAULT_NAME;
+  return app;
+}
 
 describe('SampleReactComponent', () => {
   it('should be a function', () => {
@@ -29,9 +28,16 @@ describe('SampleReactComponent', () => {
     const container = activeDocument.createElement('div');
     activeDocument.body.appendChild(container);
     const root = createRoot(container);
+    const app = createAppWithVaultName();
 
     await new Promise<void>((resolve) => {
-      root.render(createElement(SampleReactComponent, { startCount: START_COUNT }));
+      root.render(
+        createElement(
+          AppContext.Provider,
+          { value: app.asOriginalType__() },
+          createElement(SampleReactComponent, { startCount: START_COUNT })
+        )
+      );
       window.setTimeout(resolve, 0);
     });
 
@@ -44,13 +50,20 @@ describe('SampleReactComponent', () => {
     const container = activeDocument.createElement('div');
     activeDocument.body.appendChild(container);
     const root = createRoot(container);
+    const app = createAppWithVaultName();
 
     await new Promise<void>((resolve) => {
-      root.render(createElement(SampleReactComponent, { startCount: START_COUNT }));
+      root.render(
+        createElement(
+          AppContext.Provider,
+          { value: app.asOriginalType__() },
+          createElement(SampleReactComponent, { startCount: START_COUNT })
+        )
+      );
       window.setTimeout(resolve, 0);
     });
 
-    expect(container.textContent).toContain('TestVault');
+    expect(container.textContent).toContain(VAULT_NAME);
     root.unmount();
     activeDocument.body.removeChild(container);
   });
@@ -59,9 +72,16 @@ describe('SampleReactComponent', () => {
     const container = activeDocument.createElement('div');
     activeDocument.body.appendChild(container);
     const root = createRoot(container);
+    const app = createAppWithVaultName();
 
     await new Promise<void>((resolve) => {
-      root.render(createElement(SampleReactComponent, { startCount: START_COUNT }));
+      root.render(
+        createElement(
+          AppContext.Provider,
+          { value: app.asOriginalType__() },
+          createElement(SampleReactComponent, { startCount: START_COUNT })
+        )
+      );
       window.setTimeout(resolve, 0);
     });
 

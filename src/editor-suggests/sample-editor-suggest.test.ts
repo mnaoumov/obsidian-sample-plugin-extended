@@ -1,5 +1,4 @@
 import type {
-  App,
   Editor,
   EditorPosition,
   EditorSuggestContext,
@@ -7,6 +6,8 @@ import type {
 } from 'obsidian';
 
 import { castTo } from 'obsidian-dev-utils/object-utils';
+import { strictProxy } from 'obsidian-dev-utils/strict-proxy';
+import { App } from 'obsidian-test-mocks/obsidian';
 import {
   describe,
   expect,
@@ -14,24 +15,11 @@ import {
   vi
 } from 'vitest';
 
-const EditorSuggestMock = vi.hoisted(() => {
-  return class {
-    public close(): void {
-      /* No-op */
-    }
-  };
-});
-
-vi.mock('obsidian', () => ({
-  EditorSuggest: EditorSuggestMock
-}));
-
-// eslint-disable-next-line import-x/first, import-x/imports-first -- vi.mock must precede imports.
 import { SampleEditorSuggest } from './sample-editor-suggest.ts';
 
 describe('SampleEditorSuggest', () => {
   function createSuggest(): SampleEditorSuggest {
-    return new SampleEditorSuggest(castTo<App>({}));
+    return new SampleEditorSuggest(App.createConfigured__().asOriginalType__());
   }
 
   it('should create an instance', () => {
@@ -42,14 +30,14 @@ describe('SampleEditorSuggest', () => {
   describe('getSuggestions', () => {
     it('should return three suggestions based on query', () => {
       const suggest = createSuggest();
-      const context = castTo<EditorSuggestContext>({ query: 'test' });
+      const context = strictProxy<EditorSuggestContext>({ query: 'test' });
       const suggestions = suggest.getSuggestions(context);
       expect(suggestions).toEqual(['test 1', 'test 2', 'test 3']);
     });
 
     it('should prefix each suggestion with query', () => {
       const suggest = createSuggest();
-      const context = castTo<EditorSuggestContext>({ query: 'hello' });
+      const context = strictProxy<EditorSuggestContext>({ query: 'hello' });
       const suggestions = castTo<string[]>(suggest.getSuggestions(context));
       expect(suggestions[0]).toBe('hello 1');
       expect(suggestions[1]).toBe('hello 2');
@@ -61,7 +49,7 @@ describe('SampleEditorSuggest', () => {
     it('should return null when line is not "Sample"', () => {
       const suggest = createSuggest();
       const cursor: EditorPosition = { ch: 0, line: 0 };
-      const editor = castTo<Editor>({
+      const editor = strictProxy<Editor>({
         getLine: vi.fn().mockReturnValue('Other')
       });
       const result = suggest.onTrigger(cursor, editor, null);
@@ -71,7 +59,7 @@ describe('SampleEditorSuggest', () => {
     it('should return trigger info when line is "Sample"', () => {
       const suggest = createSuggest();
       const cursor: EditorPosition = { ch: 0, line: 0 };
-      const editor = castTo<Editor>({
+      const editor = strictProxy<Editor>({
         getLine: vi.fn().mockReturnValue('Sample')
       });
       const result = suggest.onTrigger(cursor, editor, null);
@@ -83,10 +71,10 @@ describe('SampleEditorSuggest', () => {
     it('should include filename in query when file is provided', () => {
       const suggest = createSuggest();
       const cursor: EditorPosition = { ch: 0, line: 0 };
-      const editor = castTo<Editor>({
+      const editor = strictProxy<Editor>({
         getLine: vi.fn().mockReturnValue('Sample')
       });
-      const file = castTo<TFile>({ name: 'test.md' });
+      const file = strictProxy<TFile>({ name: 'test.md' });
       const result = suggest.onTrigger(cursor, editor, file);
       expect(result?.query).toBe('Query test.md');
     });
@@ -94,7 +82,7 @@ describe('SampleEditorSuggest', () => {
     it('should use empty string when file is null', () => {
       const suggest = createSuggest();
       const cursor: EditorPosition = { ch: 0, line: 0 };
-      const editor = castTo<Editor>({
+      const editor = strictProxy<Editor>({
         getLine: vi.fn().mockReturnValue('Sample')
       });
       const result = suggest.onTrigger(cursor, editor, null);
@@ -124,9 +112,10 @@ describe('SampleEditorSuggest', () => {
 
     it('should replace range in editor when cursor and editor are set', () => {
       const suggest = createSuggest();
+      vi.spyOn(suggest, 'close').mockImplementation(() => undefined);
       const cursor: EditorPosition = { ch: 0, line: 0 };
       const replaceRange = vi.fn();
-      const editor = castTo<Editor>({
+      const editor = strictProxy<Editor>({
         getLine: vi.fn().mockReturnValue('Sample'),
         replaceRange
       });
@@ -152,9 +141,10 @@ describe('SampleEditorSuggest', () => {
 
     it('should include event type in replacement text', () => {
       const suggest = createSuggest();
+      vi.spyOn(suggest, 'close').mockImplementation(() => undefined);
       const cursor: EditorPosition = { ch: 0, line: 0 };
       const replaceRange = vi.fn();
-      const editor = castTo<Editor>({
+      const editor = strictProxy<Editor>({
         getLine: vi.fn().mockReturnValue('Sample'),
         replaceRange
       });

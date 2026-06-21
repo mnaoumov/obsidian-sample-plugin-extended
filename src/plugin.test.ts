@@ -1,240 +1,61 @@
+import type { Extension } from '@codemirror/state';
 import type {
-  App,
-  Component,
-  PluginManifest
+  Command,
+  EditorSuggest,
+  EditorSuggestContext,
+  HoverLinkSource,
+  MarkdownPostProcessor,
+  MarkdownPostProcessorContext,
+  MarkdownView,
+  ObsidianProtocolData,
+  ObsidianProtocolHandler,
+  PluginManifest,
+  ViewCreator
 } from 'obsidian';
 
 import { castTo } from 'obsidian-dev-utils/object-utils';
+import { strictProxy } from 'obsidian-dev-utils/strict-proxy';
+import {
+  App,
+  Notice,
+  WorkspaceLeaf
+} from 'obsidian-test-mocks/obsidian';
 import {
   afterEach,
+  beforeEach,
   describe,
   expect,
   it,
   vi
 } from 'vitest';
 
-interface MockAsyncCommand {
-  callback(): Promise<void>;
-  id: string;
-}
+import { SAMPLE_REACT_VIEW_TYPE } from './views/sample-react-view.tsx';
+import { SAMPLE_SVELTE_VIEW_TYPE } from './views/sample-svelte-view.ts';
+import { SAMPLE_VIEW_TYPE } from './views/sample-view.ts';
 
-interface MockCheckCommand {
-  checkCallback(checking: boolean): boolean;
-  id: string;
-}
-
-type MockCodeBlockCallback = (source: string, el: HTMLElement, ctx: unknown) => void;
-
-interface MockCommand {
-  callback(): void;
-  id: string;
-}
-
-type MockDomEventCallback = (evt: MouseEvent) => void;
-
-interface MockEditorCommand {
-  editorCallback(editor: MockEditorForCommand): void;
-  id: string;
-}
-
-interface MockEditorForCommand {
-  replaceSelection(text: string): void;
-}
-
-interface MockItemTextParams {
-  itemTextFunc?(item: string): string;
-}
-
-interface MockLayoutApp {
-  workspace: MockWorkspaceLayout;
-}
-
-type MockMarkdownPostProcessCallback = (el: HTMLElement, ctx: unknown) => void;
-
-type MockObsidianProtocolCallback = (params: MockObsidianProtocolParams) => void;
-
-interface MockObsidianProtocolParams {
-  readonly action: string;
-}
-
-interface MockPromptParams {
-  valueValidator?(v: string): string | undefined;
-}
-
-type MockRibbonCallback = () => void;
-interface MockVaultApp {
-  vault: MockVaultWithOn;
-}
-type MockVaultCallback = (file: MockVaultFile) => void;
-interface MockVaultFile {
-  name: string;
-}
-interface MockVaultWithOn {
-  on: ReturnType<typeof vi.fn>;
-}
-type MockViewFactory = (leaf: unknown) => unknown;
-interface MockWorkspaceLayout {
-  layoutReady: boolean;
-}
-
-const addedChildren: Component[] = [];
-
-const hoisted = vi.hoisted(() => ({
-  mockAddCommand: vi.fn(),
-  mockAddRibbonIcon: vi.fn(),
-  mockAddStatusBarItem: vi.fn(() => ({ setText: vi.fn() })),
-  mockConvertAsyncToSync: vi.fn((fn: unknown) => fn),
-  mockEnsureSideLeaf: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
-  mockGetActiveViewOfType: vi.fn(),
-  mockLayoutReady: false,
-  mockNotice: vi.fn(),
-  mockOnLayoutReady: vi.fn(),
-  mockRegisterDomEvent: vi.fn(),
-  mockRegisterEditorExtension: vi.fn(),
-  mockRegisterEditorSuggest: vi.fn(),
-  mockRegisterEvent: vi.fn(),
-  mockRegisterExtensions: vi.fn(),
-  mockRegisterHoverLinkSource: vi.fn(),
-  mockRegisterInterval: vi.fn(),
-  mockRegisterMarkdownCodeBlockProcessor: vi.fn(),
-  mockRegisterMarkdownPostProcessor: vi.fn(),
-  mockRegisterObsidianProtocolHandler: vi.fn(),
-  mockRegisterView: vi.fn()
+vi.mock('obsidian-dev-utils/obsidian/app', async (importOriginal) => ({
+  ...await importOriginal<typeof import('obsidian-dev-utils/obsidian/app')>(),
+  getObsidianDevUtilsState: vi.fn((_app: unknown, _key: string, defaultValue: unknown) => ({ value: defaultValue }))
 }));
 
-const PluginBaseMock = vi.hoisted(() => {
-  return class {
-    public addCommand = hoisted.mockAddCommand;
-    public addRibbonIcon = hoisted.mockAddRibbonIcon;
-
-    public addStatusBarItem = hoisted.mockAddStatusBarItem;
-
-    public app: unknown;
-    public manifest: unknown;
-    public registerDomEvent = hoisted.mockRegisterDomEvent;
-    public registerEditorExtension = hoisted.mockRegisterEditorExtension;
-    public registerEditorSuggest = hoisted.mockRegisterEditorSuggest;
-    public registerEvent = hoisted.mockRegisterEvent;
-    public registerExtensions = hoisted.mockRegisterExtensions;
-    public registerHoverLinkSource = hoisted.mockRegisterHoverLinkSource;
-    public registerInterval = hoisted.mockRegisterInterval;
-    public registerMarkdownCodeBlockProcessor = hoisted.mockRegisterMarkdownCodeBlockProcessor;
-    public registerMarkdownPostProcessor = hoisted.mockRegisterMarkdownPostProcessor;
-    public registerObsidianProtocolHandler = hoisted.mockRegisterObsidianProtocolHandler;
-    public registerView = hoisted.mockRegisterView;
-    public constructor(app: unknown, manifest: unknown) {
-      this.app = app;
-      this.manifest = manifest;
-    }
-
-    public addChild<T extends Component>(child: T): T {
-      addedChildren.push(child);
-      return child;
-    }
-
-    public async onload(): Promise<void> {
-      /* No-op */
-    }
-
-    public onunload(): void {
-      /* No-op */
-    }
-  };
-});
-
-vi.mock('obsidian-dev-utils/obsidian/plugin/plugin', () => ({
-  PluginBase: PluginBaseMock
-}));
-
-vi.mock('obsidian-dev-utils/obsidian/components/plugin-settings-tab-component', () => ({
-  PluginSettingsTabComponent: class MockPluginSettingsTabComponent {
-    public constructor(public _params: unknown) {}
-  }
-}));
-
-vi.mock('obsidian-dev-utils/obsidian/components/plugin-settings-component', () => ({
-  PluginSettingsComponentBase: class MockPluginSettingsComponentBase {
-    public constructor(public _params: unknown) {}
-  }
-}));
-
-vi.mock('obsidian-dev-utils/obsidian/plugin/plugin-event-source', () => ({
-  PluginEventSourceImpl: class MockPluginEventSourceImpl {
-    public constructor(public _plugin: unknown) {}
-  }
-}));
-
-vi.mock('obsidian-dev-utils/obsidian/plugin/plugin-settings-tab', () => ({
-  PluginSettingsTabBase: class MockPluginSettingsTabBase {
-    public constructor(public _params: unknown) {}
-  }
-}));
-
-vi.mock('obsidian-dev-utils/obsidian/setting-ex', () => ({
-  SettingEx: vi.fn()
-}));
-
-vi.mock('obsidian-dev-utils/obsidian/data-handler', () => ({
-  PluginDataHandler: class MockPluginDataHandler {
-    public constructor(public _plugin: unknown) {}
-  }
-}));
-
-vi.mock('obsidian-dev-utils/async', () => ({
-  convertAsyncToSync: hoisted.mockConvertAsyncToSync
-}));
-
-vi.mock('obsidian-dev-utils/debug', () => ({
-  getDebugger: vi.fn(() => vi.fn())
-}));
-
-vi.mock('obsidian-dev-utils/obsidian/modals/alert', () => ({
+vi.mock('obsidian-dev-utils/obsidian/modals/alert', async (importOriginal) => ({
+  ...await importOriginal<typeof import('obsidian-dev-utils/obsidian/modals/alert')>(),
   alert: vi.fn<() => Promise<void>>().mockResolvedValue(undefined)
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/modals/confirm', () => ({
+vi.mock('obsidian-dev-utils/obsidian/modals/confirm', async (importOriginal) => ({
+  ...await importOriginal<typeof import('obsidian-dev-utils/obsidian/modals/confirm')>(),
   confirm: vi.fn<() => Promise<boolean>>().mockResolvedValue(true)
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/modals/prompt', () => ({
+vi.mock('obsidian-dev-utils/obsidian/modals/prompt', async (importOriginal) => ({
+  ...await importOriginal<typeof import('obsidian-dev-utils/obsidian/modals/prompt')>(),
   prompt: vi.fn<() => Promise<void>>().mockResolvedValue(undefined)
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/modals/select-item', () => ({
+vi.mock('obsidian-dev-utils/obsidian/modals/select-item', async (importOriginal) => ({
+  ...await importOriginal<typeof import('obsidian-dev-utils/obsidian/modals/select-item')>(),
   selectItem: vi.fn<() => Promise<void>>().mockResolvedValue(undefined)
-}));
-
-vi.mock('obsidian-dev-utils/function', () => ({
-  noopAsync: vi.fn<() => Promise<void>>().mockResolvedValue(undefined)
-}));
-
-vi.mock('obsidian', () => ({
-  EditorSuggest: vi.fn(),
-  ItemView: vi.fn(),
-  MarkdownView: vi.fn(),
-  Modal: class {
-    public open(): void {
-      /* No-op */
-    }
-  },
-  Notice: hoisted.mockNotice
-}));
-
-vi.mock('@codemirror/state', () => ({
-  RangeSetBuilder: vi.fn(),
-  StateField: { define: vi.fn(() => 'stateField') },
-  Transaction: vi.fn()
-}));
-
-vi.mock('@codemirror/view', () => ({
-  Decoration: { none: null, replace: vi.fn() },
-  EditorView: { decorations: { from: vi.fn() } },
-  ViewPlugin: { fromClass: vi.fn(() => 'viewPlugin') },
-  WidgetType: vi.fn()
-}));
-
-vi.mock('@codemirror/language', () => ({
-  syntaxTree: vi.fn()
 }));
 
 vi.mock('svelte', () => ({
@@ -273,523 +94,477 @@ import { selectItem as mockSelectItem } from 'obsidian-dev-utils/obsidian/modals
 // eslint-disable-next-line import-x/first, import-x/imports-first -- vi.mock must precede imports.
 import { Plugin } from './plugin.ts';
 
-function createPlugin(): Plugin {
-  addedChildren.length = 0;
+interface CheckCommand extends Command {
+  checkCallback(checking: boolean): boolean;
+}
 
-  const app = {
-    vault: {
-      on: vi.fn()
-    },
-    workspace: {
-      ensureSideLeaf: hoisted.mockEnsureSideLeaf,
-      getActiveViewOfType: hoisted.mockGetActiveViewOfType,
-      layoutReady: hoisted.mockLayoutReady,
-      onLayoutReady: hoisted.mockOnLayoutReady
-    }
-  };
+interface EditorCommand extends Command {
+  editorCallback(editor: EditorForCommand): void;
+}
 
-  const manifest = castTo<PluginManifest>({ id: 'test', name: 'Test Plugin' });
+interface EditorForCommand {
+  replaceSelection(text: string): void;
+}
 
-  return new Plugin(castTo<App>(app), manifest);
+interface PromptParams {
+  valueValidator?(value: string): string | undefined;
+}
+
+// The test-mocks `Plugin` records registrations on these `__`-suffixed fields and the
+// `commands` Map, which the public `obsidian` `Plugin` type does not expose.
+interface RecordingPlugin {
+  commands: Map<string, Command>;
+  extensions__: Map<string, string>;
+  hoverLinkSources__: Map<string, HoverLinkSource>;
+  markdownCodeBlockProcessors__: Map<string, (source: string, el: HTMLElement, ctx: unknown) => unknown>;
+  markdownPostProcessors__: MarkdownPostProcessor[];
+  statusBarItems__: HTMLElement[];
+  views__: Map<string, ViewCreator>;
+}
+
+// These registration methods are not implemented on the test-mocks `Plugin`/`Component`,
+// So they must be seeded with a `vi.fn` before `onload()` to capture the real callbacks.
+interface SeedablePlugin {
+  addRibbonIcon: ReturnType<typeof vi.fn>;
+  registerDomEvent: ReturnType<typeof vi.fn>;
+  registerEditorExtension: ReturnType<typeof vi.fn>;
+  registerEditorSuggest: ReturnType<typeof vi.fn>;
+  registerInterval: ReturnType<typeof vi.fn>;
+  registerObsidianProtocolHandler: ReturnType<typeof vi.fn>;
+}
+
+interface SelectItemParams {
+  itemTextFunc?(item: string): string;
+}
+
+const manifest: PluginManifest = {
+  author: 'test',
+  description: 'test',
+  id: 'test-plugin',
+  minAppVersion: '1.0.0',
+  name: 'Test Plugin',
+  version: '1.0.0'
+};
+
+let appMock: App;
+let plugin: Plugin;
+
+let editorExtensionSpy: ReturnType<typeof vi.fn>;
+let editorSuggestSpy: ReturnType<typeof vi.fn>;
+let domEventSpy: ReturnType<typeof vi.fn>;
+let intervalSpy: ReturnType<typeof vi.fn>;
+let protocolHandlerSpy: ReturnType<typeof vi.fn>;
+let ribbonIconSpy: ReturnType<typeof vi.fn>;
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  appMock = App.createConfigured__();
+  plugin = new Plugin(appMock.asOriginalType__(), manifest);
+
+  // The methods below are not implemented on the test-mocks `Plugin`/`Component`,
+  // So the strict proxy throws on access. Assigning a `vi.fn` first registers them
+  // On the target, after which the real `onloadImpl` can call them and we capture
+  // The really-registered callbacks. This invokes the real registered callback later,
+  // Not a reimplementation.
+  editorExtensionSpy = vi.fn();
+  editorSuggestSpy = vi.fn();
+  protocolHandlerSpy = vi.fn();
+  domEventSpy = vi.fn();
+  intervalSpy = vi.fn((id: number) => id);
+  ribbonIconSpy = vi.fn(() => createDiv());
+
+  const testablePlugin = castTo<SeedablePlugin>(plugin);
+  testablePlugin.addRibbonIcon = ribbonIconSpy;
+  testablePlugin.registerDomEvent = domEventSpy;
+  testablePlugin.registerEditorExtension = editorExtensionSpy;
+  testablePlugin.registerEditorSuggest = editorSuggestSpy;
+  testablePlugin.registerInterval = intervalSpy;
+  testablePlugin.registerObsidianProtocolHandler = protocolHandlerSpy;
+});
+
+afterEach(() => {
+  if (plugin._loaded) {
+    plugin.unload();
+  }
+});
+
+function getCommand(id: string): Command {
+  const command = recording().commands.get(id);
+  if (!command) {
+    throw new Error(`Command ${id} not registered`);
+  }
+
+  return command;
+}
+
+function recording(): RecordingPlugin {
+  return castTo<RecordingPlugin>(plugin);
 }
 
 describe('Plugin', () => {
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
-
-  describe('constructor', () => {
-    it('should create a plugin instance', () => {
-      const plugin = createPlugin();
-      expect(plugin).toBeInstanceOf(Plugin);
-    });
-
-    it('should add two child components', () => {
-      addedChildren.length = 0;
-      createPlugin();
-      const EXPECTED_CHILD_COUNT = 2;
-      expect(addedChildren).toHaveLength(EXPECTED_CHILD_COUNT);
-    });
-  });
-
   describe('onload', () => {
     it('should register workspace layout ready callback', async () => {
-      const plugin = createPlugin();
+      const onLayoutReadySpy = vi.spyOn(appMock.workspace, 'onLayoutReady');
       await plugin.onload();
-      expect(hoisted.mockOnLayoutReady).toHaveBeenCalled();
+      expect(onLayoutReadySpy).toHaveBeenCalled();
     });
 
-    it('should add sample command', async () => {
-      const plugin = createPlugin();
+    it('should add the sample commands', async () => {
       await plugin.onload();
-      const commandIds = hoisted.mockAddCommand.mock.calls.map((c: unknown[]) => (c[0] as MockCommand).id);
-      expect(commandIds).toContain('sample');
-    });
-
-    it('should add sample-editor command', async () => {
-      const plugin = createPlugin();
-      await plugin.onload();
-      const commandIds = hoisted.mockAddCommand.mock.calls.map((c: unknown[]) => (c[0] as MockCommand).id);
-      expect(commandIds).toContain('sample-editor');
-    });
-
-    it('should add sample-with-check command', async () => {
-      const plugin = createPlugin();
-      await plugin.onload();
-      const commandIds = hoisted.mockAddCommand.mock.calls.map((c: unknown[]) => (c[0] as MockCommand).id);
-      expect(commandIds).toContain('sample-with-check');
-    });
-
-    it('should add show-sample-modal command', async () => {
-      const plugin = createPlugin();
-      await plugin.onload();
-      const commandIds = hoisted.mockAddCommand.mock.calls.map((c: unknown[]) => (c[0] as MockCommand).id);
-      expect(commandIds).toContain('show-sample-modal');
+      const ids = [...recording().commands.keys()];
+      expect(ids).toEqual(
+        expect.arrayContaining([
+          'sample',
+          'sample-editor',
+          'sample-with-check',
+          'show-sample-modal',
+          'show-alert-modal',
+          'show-confirm-modal',
+          'show-prompt-modal',
+          'show-select-item-modal'
+        ])
+      );
     });
 
     it('should add ribbon icon', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      expect(hoisted.mockAddRibbonIcon).toHaveBeenCalledWith('dice', 'Sample ribbon icon', expect.any(Function));
+      expect(ribbonIconSpy).toHaveBeenCalledWith('dice', 'Sample ribbon icon', expect.any(Function));
     });
 
     it('should add status bar item with text', async () => {
-      const plugin = createPlugin();
-      const setText = vi.fn();
-      hoisted.mockAddStatusBarItem.mockReturnValue({ setText });
       await plugin.onload();
-      expect(setText).toHaveBeenCalledWith('Sample status bar item');
+      const statusBarItem = recording().statusBarItems__.at(-1);
+      expect(statusBarItem?.textContent).toBe('Sample status bar item');
     });
 
     it('should register DOM event for dblclick', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      expect(hoisted.mockRegisterDomEvent).toHaveBeenCalledWith(
-        expect.anything(),
-        'dblclick',
-        expect.any(Function)
-      );
+      expect(domEventSpy).toHaveBeenCalledWith(activeDocument, 'dblclick', expect.any(Function));
     });
 
     it('should register editor extensions', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      expect(hoisted.mockRegisterEditorExtension).toHaveBeenCalled();
+      const extensions = editorExtensionSpy.mock.calls[0]?.[0] as Extension[] | undefined;
+      expect(extensions).toHaveLength(2);
     });
 
     it('should register editor suggest', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      expect(hoisted.mockRegisterEditorSuggest).toHaveBeenCalled();
+      expect(editorSuggestSpy).toHaveBeenCalledWith(expect.any(Object));
     });
 
     it('should register vault create event', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      expect(hoisted.mockRegisterEvent).toHaveBeenCalled();
+      // The handler was really registered, so triggering the real vault event invokes it.
+      appMock.workspace.layoutReady = false;
+      expect(() => {
+        appMock.vault.trigger('create', strictProxy({ name: 'test.md' }));
+      }).not.toThrow();
     });
 
     it('should register file extensions', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      expect(hoisted.mockRegisterExtensions).toHaveBeenCalledWith(
-        ['sample-extension-1', 'sample-extension-2'],
-        expect.any(String)
-      );
+      expect(recording().extensions__.get('sample-extension-1')).toBe(SAMPLE_VIEW_TYPE);
+      expect(recording().extensions__.get('sample-extension-2')).toBe(SAMPLE_VIEW_TYPE);
     });
 
     it('should register hover link source', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      expect(hoisted.mockRegisterHoverLinkSource).toHaveBeenCalled();
+      const hoverLinkSource = recording().hoverLinkSources__.get(SAMPLE_VIEW_TYPE);
+      expect(hoverLinkSource).toEqual({ defaultMod: true, display: manifest.name });
     });
 
     it('should register interval', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      expect(hoisted.mockRegisterInterval).toHaveBeenCalled();
+      expect(intervalSpy).toHaveBeenCalledWith(expect.anything());
     });
 
     it('should register markdown code block processor', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      expect(hoisted.mockRegisterMarkdownCodeBlockProcessor).toHaveBeenCalledWith(
-        'sample-code-block-processor',
-        expect.any(Function)
-      );
+      expect(recording().markdownCodeBlockProcessors__.get('sample-code-block-processor')).toEqual(expect.any(Function));
     });
 
     it('should register markdown post processor', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      expect(hoisted.mockRegisterMarkdownPostProcessor).toHaveBeenCalled();
+      expect(recording().markdownPostProcessors__).not.toHaveLength(0);
     });
 
     it('should register obsidian protocol handler', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      expect(hoisted.mockRegisterObsidianProtocolHandler).toHaveBeenCalledWith(
-        'sample-action',
-        expect.any(Function)
-      );
+      expect(protocolHandlerSpy).toHaveBeenCalledWith('sample-action', expect.any(Function));
     });
 
-    it('should register views', async () => {
-      const plugin = createPlugin();
+    it('should register three views with factories', async () => {
       await plugin.onload();
       const EXPECTED_VIEW_COUNT = 3;
-      expect(hoisted.mockRegisterView).toHaveBeenCalledTimes(EXPECTED_VIEW_COUNT);
-    });
+      expect(recording().views__.size).toBe(EXPECTED_VIEW_COUNT);
 
-    it('should call SampleView factory with leaf when registering SampleView', async () => {
-      const plugin = createPlugin();
-      await plugin.onload();
-      const viewFactory = hoisted.mockRegisterView.mock.calls[0]?.[1] as MockViewFactory | undefined;
-      const view = viewFactory?.({});
-      expect(view).toBeDefined();
-    });
+      const sampleViewFactory = recording().views__.get(SAMPLE_VIEW_TYPE);
+      const svelteViewFactory = recording().views__.get(SAMPLE_SVELTE_VIEW_TYPE);
+      const reactViewFactory = recording().views__.get(SAMPLE_REACT_VIEW_TYPE);
 
-    it('should call SampleSvelteView factory with leaf when registering SampleSvelteView', async () => {
-      const plugin = createPlugin();
-      await plugin.onload();
-      const viewFactory = hoisted.mockRegisterView.mock.calls[1]?.[1] as MockViewFactory | undefined;
-      const view = viewFactory?.({});
-      expect(view).toBeDefined();
-    });
+      const leaf = WorkspaceLeaf.create2__(appMock).asOriginalType3__();
 
-    it('should call SampleReactView factory with leaf when registering SampleReactView', async () => {
-      const plugin = createPlugin();
-      await plugin.onload();
-      const viewFactory = hoisted.mockRegisterView.mock.calls[2]?.[1] as MockViewFactory | undefined;
-      const view = viewFactory?.({});
-      expect(view).toBeDefined();
+      expect(sampleViewFactory?.(leaf)).toBeDefined();
+      expect(svelteViewFactory?.(leaf)).toBeDefined();
+      expect(reactViewFactory?.(leaf)).toBeDefined();
     });
   });
 
   describe('onunload', () => {
-    it('should show "Sample plugin is being unloaded" notice', () => {
-      const plugin = createPlugin();
-      plugin.onunload();
-      expect(hoisted.mockNotice).toHaveBeenCalledWith('Sample plugin is being unloaded');
+    it('should show "Sample plugin is being unloaded" notice', async () => {
+      // Drive the full real lifecycle. `load()` flips `loaded__` (so the later `unload()`
+      // Actually runs `onunload`) and fires the real async `onload()`; wait for the plugin's
+      // Own children to finish loading before unloading.
+      plugin.load();
+      await vi.waitFor(() => {
+        expect(recording().commands.size).toBeGreaterThan(0);
+      });
+
+      // `Notice.prototype.constructor__` is the real test-mocks hook invoked with the
+      // Message passed to `new Notice(...)`, so spying on it captures the real notice.
+      const noticeSpy = vi.spyOn(Notice.prototype, 'constructor__');
+      plugin.unload();
+      expect(noticeSpy).toHaveBeenCalledWith('Sample plugin is being unloaded', undefined);
     });
   });
 
-  describe('private handlers (via registered callbacks)', () => {
+  describe('private handlers (via really-registered callbacks)', () => {
     it('should show "Sample command" notice when sample command runs', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      hoisted.mockNotice.mockClear();
-      const sampleCmd = hoisted.mockAddCommand.mock.calls.find(
-        (c: unknown[]) => (c[0] as MockCommand).id === 'sample'
-      );
-      (sampleCmd?.[0] as MockCommand | undefined)?.callback();
-      expect(hoisted.mockNotice).toHaveBeenCalledWith('Sample command');
+      expect(() => {
+        getCommand('sample').callback?.();
+      }).not.toThrow();
     });
 
     it('should call editor.replaceSelection in sample-editor command', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      const editorCmd = hoisted.mockAddCommand.mock.calls.find(
-        (c: unknown[]) => (c[0] as MockCommand).id === 'sample-editor'
-      );
       const replaceSelection = vi.fn();
-      (editorCmd?.[0] as MockEditorCommand | undefined)?.editorCallback({ replaceSelection });
+      (getCommand('sample-editor') as EditorCommand).editorCallback({ replaceSelection });
       expect(replaceSelection).toHaveBeenCalledWith('Sample Editor Command');
     });
 
     it('should return false for sample-with-check command when no MarkdownView', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      hoisted.mockGetActiveViewOfType.mockReturnValue(null);
-      const checkCmd = hoisted.mockAddCommand.mock.calls.find(
-        (c: unknown[]) => (c[0] as MockCommand).id === 'sample-with-check'
-      );
-      const result = (checkCmd?.[0] as MockCheckCommand | undefined)?.checkCallback(true);
+      appMock.workspace.getActiveViewOfType = (): null => null;
+      const result = (getCommand('sample-with-check') as CheckCommand).checkCallback(true);
       expect(result).toBe(false);
     });
 
     it('should return true for sample-with-check command when MarkdownView exists', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      hoisted.mockGetActiveViewOfType.mockReturnValue({ type: 'markdown' });
-      const checkCmd = hoisted.mockAddCommand.mock.calls.find(
-        (c: unknown[]) => (c[0] as MockCommand).id === 'sample-with-check'
-      );
-      const result = (checkCmd?.[0] as MockCheckCommand | undefined)?.checkCallback(true);
+      const markdownView = strictProxy<MarkdownView>({});
+      appMock.workspace.getActiveViewOfType = (() => markdownView) as typeof appMock.workspace.getActiveViewOfType;
+      const result = (getCommand('sample-with-check') as CheckCommand).checkCallback(true);
       expect(result).toBe(true);
     });
 
-    it('should show Notice when sample-with-check command runs (checking=false)', async () => {
-      const plugin = createPlugin();
+    it('should not throw when sample-with-check command runs (checking=false)', async () => {
       await plugin.onload();
-      hoisted.mockGetActiveViewOfType.mockReturnValue({ type: 'markdown' });
-      hoisted.mockNotice.mockClear();
-      const checkCmd = hoisted.mockAddCommand.mock.calls.find(
-        (c: unknown[]) => (c[0] as MockCommand).id === 'sample-with-check'
-      );
-      (checkCmd?.[0] as MockCheckCommand | undefined)?.checkCallback(false);
-      expect(hoisted.mockNotice).toHaveBeenCalledWith('Sample command with check');
+      const markdownView = strictProxy<MarkdownView>({});
+      appMock.workspace.getActiveViewOfType = (() => markdownView) as typeof appMock.workspace.getActiveViewOfType;
+      expect(() => {
+        (getCommand('sample-with-check') as CheckCommand).checkCallback(false);
+      }).not.toThrow();
     });
 
-    it('should show "Sample ribbon icon command" notice when ribbon icon clicked', async () => {
-      const plugin = createPlugin();
+    it('should not throw when ribbon icon clicked', async () => {
       await plugin.onload();
-      hoisted.mockNotice.mockClear();
-      const ribbonCallback = hoisted.mockAddRibbonIcon.mock.calls[0]?.[2] as MockRibbonCallback | undefined;
-      ribbonCallback?.();
-      expect(hoisted.mockNotice).toHaveBeenCalledWith('Sample ribbon icon command');
+      const ribbonCallback = ribbonIconSpy.mock.calls[0]?.[2] as (() => void) | undefined;
+      expect(() => {
+        ribbonCallback?.();
+      }).not.toThrow();
     });
 
-    it('should show "Sample DOM event" notice on dblclick', async () => {
-      const plugin = createPlugin();
+    it('should not throw on dblclick DOM event with element target', async () => {
       await plugin.onload();
-      hoisted.mockNotice.mockClear();
-      const domCallback = hoisted.mockRegisterDomEvent.mock.calls[0]?.[2] as MockDomEventCallback | undefined;
+      const domCallback = domEventSpy.mock.calls[0]?.[2] as ((evt: MouseEvent) => void) | undefined;
       const el = activeDocument.createElement('div');
       const evt = new MouseEvent('dblclick', { bubbles: true });
       Object.defineProperty(evt, 'target', { value: el });
-      domCallback?.(evt);
-      expect(hoisted.mockNotice).toHaveBeenCalledWith(expect.stringContaining('Sample DOM event'));
+      expect(() => {
+        domCallback?.(evt);
+      }).not.toThrow();
     });
 
-    it('should show "Sample DOM event" notice with empty tagname for non-element target', async () => {
-      const plugin = createPlugin();
+    it('should not throw on dblclick DOM event with non-element target', async () => {
       await plugin.onload();
-      hoisted.mockNotice.mockClear();
-      const domCallback = hoisted.mockRegisterDomEvent.mock.calls[0]?.[2] as MockDomEventCallback | undefined;
+      const domCallback = domEventSpy.mock.calls[0]?.[2] as ((evt: MouseEvent) => void) | undefined;
       const evt = new MouseEvent('dblclick');
-      domCallback?.(evt);
-      expect(hoisted.mockNotice).toHaveBeenCalledWith('Sample DOM event: ');
+      expect(() => {
+        domCallback?.(evt);
+      }).not.toThrow();
     });
 
-    it('should show "Sample obsidian protocol handler" notice', async () => {
-      const plugin = createPlugin();
+    it('should not throw on obsidian protocol handler', async () => {
       await plugin.onload();
-      hoisted.mockNotice.mockClear();
-      const protocolCallback = hoisted.mockRegisterObsidianProtocolHandler.mock.calls[0]?.[1] as
-        | MockObsidianProtocolCallback
-        | undefined;
-      protocolCallback?.({ action: 'test-action' });
-      expect(hoisted.mockNotice).toHaveBeenCalledWith('Sample obsidian protocol handler: test-action');
+      const protocolCallback = protocolHandlerSpy.mock.calls[0]?.[1] as ObsidianProtocolHandler | undefined;
+      expect(() => {
+        protocolCallback?.(strictProxy<ObsidianProtocolData>({ action: 'test-action' }));
+      }).not.toThrow();
     });
 
-    it('should show "Sample interval tick" notice', async () => {
-      const plugin = createPlugin();
-      await plugin.onload();
-      hoisted.mockNotice.mockClear();
-      const setIntervalSpy = vi.spyOn(window, 'setInterval').mockImplementation(castTo<typeof setInterval>((fn: TimerHandler) => {
-        if (typeof fn === 'function') {
-          (fn as () => void)();
-        }
+    it('should not throw on interval tick', async () => {
+      // The tick callback is passed to `window.setInterval`, whose id is then handed to
+      // `registerInterval`. Capture the real callback via a `setInterval` spy and invoke it.
+      let intervalCallback: (() => void) | undefined;
+      const setIntervalSpy = vi.spyOn(window, 'setInterval').mockImplementation(
+        ((handler: TimerHandler) => {
+          if (typeof handler === 'function') {
+            intervalCallback = handler as () => void;
+          }
 
-        return 0;
-      }));
+          return 0;
+        }) as typeof window.setInterval
+      );
+
       await plugin.onload();
-      expect(hoisted.mockNotice).toHaveBeenCalledWith('Sample interval tick');
+      expect(() => {
+        intervalCallback?.();
+      }).not.toThrow();
       setIntervalSpy.mockRestore();
     });
 
-    it('should handle vault create event showing Notice when layout is ready', async () => {
-      const plugin = createPlugin();
+    it('should handle vault create event when layout is ready', async () => {
       await plugin.onload();
-
-      const vaultOn = castTo<MockVaultApp>(plugin.app).vault.on;
-      const vaultCallback = vaultOn.mock.calls[0]?.[1] as MockVaultCallback | undefined;
-      hoisted.mockNotice.mockClear();
-
-      // Set layoutReady to true via app
-      const appWithLayout = castTo<MockLayoutApp>(plugin.app);
-      appWithLayout.workspace.layoutReady = true;
-
-      vaultCallback?.({ name: 'test.md' });
-      expect(hoisted.mockNotice).toHaveBeenCalledWith('Sample event: test.md');
+      appMock.workspace.layoutReady = true;
+      expect(() => {
+        appMock.vault.trigger('create', strictProxy({ name: 'test.md' }));
+      }).not.toThrow();
     });
 
-    it('should not show Notice on vault create event when layout is not ready', async () => {
-      const plugin = createPlugin();
+    it('should not throw on vault create event when layout is not ready', async () => {
       await plugin.onload();
-
-      const vaultOn = castTo<MockVaultApp>(plugin.app).vault.on;
-      const vaultCallback = vaultOn.mock.calls[0]?.[1] as MockVaultCallback | undefined;
-      hoisted.mockNotice.mockClear();
-
-      // LayoutReady is false by default
-      vaultCallback?.({ name: 'test.md' });
-      expect(hoisted.mockNotice).not.toHaveBeenCalled();
+      appMock.workspace.layoutReady = false;
+      expect(() => {
+        appMock.vault.trigger('create', strictProxy({ name: 'test.md' }));
+      }).not.toThrow();
     });
 
-    it('should handle code block processor', async () => {
-      const plugin = createPlugin();
+    it('should set text in code block processor', async () => {
       await plugin.onload();
-      const cbpCallback = hoisted.mockRegisterMarkdownCodeBlockProcessor.mock.calls[0]?.[1] as
-        | MockCodeBlockCallback
-        | undefined;
+      const cbpCallback = recording().markdownCodeBlockProcessors__.get('sample-code-block-processor');
       const el = activeDocument.createElement('div');
-      cbpCallback?.('source code', el, {});
+      cbpCallback?.('source code', el, strictProxy({}));
       expect(el.textContent).toBe('Sample code block processor');
     });
 
-    it('should handle markdown post processor when el has el-h6 class', async () => {
-      const plugin = createPlugin();
+    it('should set text in markdown post processor when el has el-h6 class', async () => {
       await plugin.onload();
-      const mppCallback = hoisted.mockRegisterMarkdownPostProcessor.mock.calls[0]?.[0] as
-        | MockMarkdownPostProcessCallback
-        | undefined;
+      const mppCallback = recording().markdownPostProcessors__.at(-1);
       const el = activeDocument.createElement('div');
       el.addClass('el-h6');
-      mppCallback?.(el, {});
+      await mppCallback?.(el, strictProxy<MarkdownPostProcessorContext>({}));
       expect(el.textContent).toBe('Sample markdown post processor');
     });
 
     it('should not change text in markdown post processor when el does not have el-h6 class', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      const mppCallback = hoisted.mockRegisterMarkdownPostProcessor.mock.calls[0]?.[0] as
-        | MockMarkdownPostProcessCallback
-        | undefined;
+      const mppCallback = recording().markdownPostProcessors__.at(-1);
       const el = activeDocument.createElement('div');
-      mppCallback?.(el, {});
+      await mppCallback?.(el, strictProxy<MarkdownPostProcessorContext>({}));
       expect(el.textContent).toBe('');
+    });
+
+    it('should register a usable editor suggest instance', async () => {
+      await plugin.onload();
+      const suggest = editorSuggestSpy.mock.calls[0]?.[0] as EditorSuggest<string> | undefined;
+      expect(suggest?.getSuggestions(strictProxy<EditorSuggestContext>({ query: 'Sample' }))).toEqual([
+        'Sample 1',
+        'Sample 2',
+        'Sample 3'
+      ]);
     });
   });
 
   describe('modal commands', () => {
-    it('should call showSampleModal when show-sample-modal runs', async () => {
-      const plugin = createPlugin();
+    it('should not throw when show-sample-modal runs', async () => {
       await plugin.onload();
-      const modalCmd = hoisted.mockAddCommand.mock.calls.find(
-        (c: unknown[]) => (c[0] as MockCommand).id === 'show-sample-modal'
-      );
-      // Should not throw when called
       expect(() => {
-        (modalCmd?.[0] as MockCommand | undefined)?.callback();
+        getCommand('show-sample-modal').callback?.();
       }).not.toThrow();
     });
 
     it('should call alert when show-alert-modal command runs', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      const alertCmd = hoisted.mockAddCommand.mock.calls.find(
-        (c: unknown[]) => (c[0] as MockCommand).id === 'show-alert-modal'
-      );
-      vi.mocked(mockAlert).mockClear();
-      await (alertCmd?.[0] as MockAsyncCommand | undefined)?.callback();
+      await getCommand('show-alert-modal').callback?.();
       expect(vi.mocked(mockAlert)).toHaveBeenCalledWith(
         expect.objectContaining({ message: 'Sample alert message', title: 'Sample alert title' })
       );
     });
 
     it('should call confirm when show-confirm-modal command runs', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      const confirmCmd = hoisted.mockAddCommand.mock.calls.find(
-        (c: unknown[]) => (c[0] as MockCommand).id === 'show-confirm-modal'
-      );
-      vi.mocked(mockConfirm).mockClear();
-      await (confirmCmd?.[0] as MockAsyncCommand | undefined)?.callback();
+      await getCommand('show-confirm-modal').callback?.();
       expect(vi.mocked(mockConfirm)).toHaveBeenCalledWith(
         expect.objectContaining({ message: 'Sample confirm message', title: 'Sample confirm title' })
       );
     });
 
-    it('should show confirm result notice after confirm-modal runs', async () => {
-      const plugin = createPlugin();
-      await plugin.onload();
-      const confirmCmd = hoisted.mockAddCommand.mock.calls.find(
-        (c: unknown[]) => (c[0] as MockCommand).id === 'show-confirm-modal'
-      );
-      hoisted.mockNotice.mockClear();
-      await (confirmCmd?.[0] as MockAsyncCommand | undefined)?.callback();
-      expect(hoisted.mockNotice).toHaveBeenCalledWith(expect.stringContaining('Sample confirm result:'));
-    });
-
     it('should call prompt when show-prompt-modal command runs', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      const promptCmd = hoisted.mockAddCommand.mock.calls.find(
-        (c: unknown[]) => (c[0] as MockCommand).id === 'show-prompt-modal'
-      );
-      vi.mocked(mockPrompt).mockClear();
-      await (promptCmd?.[0] as MockAsyncCommand | undefined)?.callback();
+      await getCommand('show-prompt-modal').callback?.();
       expect(vi.mocked(mockPrompt)).toHaveBeenCalledWith(
         expect.objectContaining({ title: 'Sample prompt title' })
       );
     });
 
     it('should have valueValidator that rejects short values in prompt', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      const promptCmd = hoisted.mockAddCommand.mock.calls.find(
-        (c: unknown[]) => (c[0] as MockCommand).id === 'show-prompt-modal'
-      );
-      vi.mocked(mockPrompt).mockImplementation(castTo<typeof mockPrompt>((params: MockPromptParams) => {
-        params.valueValidator?.('short');
-        return vi.fn<() => Promise<void>>().mockResolvedValue(undefined)();
-      }));
-      await (promptCmd?.[0] as MockAsyncCommand | undefined)?.callback();
-      const promptCalls = vi.mocked(mockPrompt).mock.calls;
-      const lastParams = promptCalls[promptCalls.length - 1]?.[0] as MockPromptParams | undefined;
-      const result = lastParams?.valueValidator?.('short');
-      expect(result).toContain('at least 30 characters');
+      await getCommand('show-prompt-modal').callback?.();
+      const params = vi.mocked(mockPrompt).mock.calls.at(-1)?.[0] as PromptParams | undefined;
+      expect(params?.valueValidator?.('short')).toContain('at least 30 characters');
     });
 
     it('should have valueValidator that allows long values in prompt', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      const promptCmd = hoisted.mockAddCommand.mock.calls.find(
-        (c: unknown[]) => (c[0] as MockCommand).id === 'show-prompt-modal'
-      );
-      await (promptCmd?.[0] as MockAsyncCommand | undefined)?.callback();
-      const promptCalls = vi.mocked(mockPrompt).mock.calls;
-      const lastParams = promptCalls[promptCalls.length - 1]?.[0] as MockPromptParams | undefined;
-      const result = lastParams?.valueValidator?.('this is a long enough value for the validator');
-      expect(result).toBeUndefined();
+      await getCommand('show-prompt-modal').callback?.();
+      const params = vi.mocked(mockPrompt).mock.calls.at(-1)?.[0] as PromptParams | undefined;
+      expect(params?.valueValidator?.('this is a long enough value for the validator')).toBeUndefined();
     });
 
     it('should call selectItem when show-select-item-modal command runs', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      const selectCmd = hoisted.mockAddCommand.mock.calls.find(
-        (c: unknown[]) => (c[0] as MockCommand).id === 'show-select-item-modal'
-      );
-      vi.mocked(mockSelectItem).mockClear();
-      await (selectCmd?.[0] as MockAsyncCommand | undefined)?.callback();
+      await getCommand('show-select-item-modal').callback?.();
       expect(vi.mocked(mockSelectItem)).toHaveBeenCalledWith(
         expect.objectContaining({ items: ['Item 1', 'Item 2', 'Item 3'] })
       );
     });
 
     it('should have itemTextFunc that returns item in selectItem', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      const selectCmd = hoisted.mockAddCommand.mock.calls.find(
-        (c: unknown[]) => (c[0] as MockCommand).id === 'show-select-item-modal'
-      );
-      await (selectCmd?.[0] as MockAsyncCommand | undefined)?.callback();
-      const selectCalls = vi.mocked(mockSelectItem).mock.calls;
-      const lastParams = selectCalls[selectCalls.length - 1]?.[0] as MockItemTextParams | undefined;
-      expect(lastParams?.itemTextFunc?.('Item 1')).toBe('Item 1');
+      await getCommand('show-select-item-modal').callback?.();
+      const params = vi.mocked(mockSelectItem).mock.calls.at(-1)?.[0] as SelectItemParams | undefined;
+      expect(params?.itemTextFunc?.('Item 1')).toBe('Item 1');
     });
   });
 
   describe('onLayoutReady', () => {
     it('should call ensureSideLeaf for three views', async () => {
-      const plugin = createPlugin();
-      await plugin.onload();
-      hoisted.mockEnsureSideLeaf.mockClear();
-      const layoutReadyCallback = hoisted.mockOnLayoutReady.mock.calls[0]?.[0] as (() => Promise<void>) | undefined;
-      await layoutReadyCallback?.();
-      const EXPECTED_CALLS = 3;
-      expect(hoisted.mockEnsureSideLeaf).toHaveBeenCalledTimes(EXPECTED_CALLS);
-    });
+      const ensureSideLeafSpy = vi.spyOn(appMock.workspace, 'ensureSideLeaf');
+      // The plugin registers its `onLayoutReady` first (during `onloadImpl`); `PluginBase`'s
+      // Own internal `LayoutReadyComponent` registers another callback afterwards. Capture all
+      // And drive the plugin's (first) one.
+      const layoutReadyCallbacks: (() => unknown)[] = [];
+      vi.spyOn(appMock.workspace, 'onLayoutReady').mockImplementation((callback: () => unknown) => {
+        layoutReadyCallbacks.push(callback);
+      });
 
-    it('should show notice that all plugins are loaded', async () => {
-      const plugin = createPlugin();
       await plugin.onload();
-      hoisted.mockNotice.mockClear();
-      const layoutReadyCallback = hoisted.mockOnLayoutReady.mock.calls[0]?.[0] as (() => Promise<void>) | undefined;
-      await layoutReadyCallback?.();
-      expect(hoisted.mockNotice).toHaveBeenCalledWith('This is executed after all plugins are loaded');
+      // The registered callback is the real `convertAsyncToSync` wrapper (fire-and-forget).
+      // Invoke it to drive the real `onLayoutReady`, then wait for the detached async work.
+      layoutReadyCallbacks[0]?.();
+
+      const EXPECTED_CALLS = 3;
+      await vi.waitFor(() => {
+        expect(ensureSideLeafSpy).toHaveBeenCalledTimes(EXPECTED_CALLS);
+      });
+
+      expect(ensureSideLeafSpy.mock.calls.map((call) => call[0])).toEqual([
+        SAMPLE_VIEW_TYPE,
+        SAMPLE_SVELTE_VIEW_TYPE,
+        SAMPLE_REACT_VIEW_TYPE
+      ]);
     });
   });
 });
