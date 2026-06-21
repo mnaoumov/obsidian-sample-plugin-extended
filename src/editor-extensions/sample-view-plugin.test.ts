@@ -26,8 +26,6 @@ interface MockEditorView {
 
 interface MockIterateParams {
   enter(node: MockNode): void;
-  readonly from?: number;
-  readonly to?: number;
 }
 
 interface MockNode {
