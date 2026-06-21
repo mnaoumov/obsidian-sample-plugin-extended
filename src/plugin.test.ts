@@ -33,11 +33,6 @@ import { SAMPLE_REACT_VIEW_TYPE } from './views/sample-react-view.tsx';
 import { SAMPLE_SVELTE_VIEW_TYPE } from './views/sample-svelte-view.ts';
 import { SAMPLE_VIEW_TYPE } from './views/sample-view.ts';
 
-vi.mock('obsidian-dev-utils/obsidian/app', async (importOriginal) => ({
-  ...await importOriginal<typeof import('obsidian-dev-utils/obsidian/app')>(),
-  getObsidianDevUtilsState: vi.fn((_app: unknown, _key: string, defaultValue: unknown) => ({ value: defaultValue }))
-}));
-
 vi.mock('obsidian-dev-utils/obsidian/modals/alert', async (importOriginal) => ({
   ...await importOriginal<typeof import('obsidian-dev-utils/obsidian/modals/alert')>(),
   alert: vi.fn<() => Promise<void>>().mockResolvedValue(undefined)
