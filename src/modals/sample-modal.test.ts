@@ -1,38 +1,24 @@
-import type { App } from 'obsidian';
-
-import { castTo } from 'obsidian-dev-utils/object-utils';
+import { App } from 'obsidian-test-mocks/obsidian';
 import {
   describe,
   expect,
-  it,
-  vi
+  it
 } from 'vitest';
 
-const ModalMock = vi.hoisted(() => {
-  return class {
-    public contentEl: HTMLElement = activeDocument.createElement('div');
-
-    public open(): void {
-      /* No-op */
-    }
-  };
-});
-
-vi.mock('obsidian', () => ({
-  Modal: ModalMock
-}));
-
-// eslint-disable-next-line import-x/first, import-x/imports-first -- vi.mock must precede imports.
 import { SampleModal } from './sample-modal.ts';
 
 describe('SampleModal', () => {
+  function createModal(): SampleModal {
+    return new SampleModal(App.createConfigured__().asOriginalType__());
+  }
+
   it('should create an instance', () => {
-    const modal = new SampleModal(castTo<App>({}));
+    const modal = createModal();
     expect(modal).toBeInstanceOf(SampleModal);
   });
 
   it('should set text to "Sample modal" on open', () => {
-    const modal = new SampleModal(castTo<App>({}));
+    const modal = createModal();
     modal.onOpen();
     expect(modal.contentEl.textContent).toBe('Sample modal');
   });

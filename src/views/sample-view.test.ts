@@ -1,29 +1,13 @@
-import type { WorkspaceLeaf } from 'obsidian';
-
-import { castTo } from 'obsidian-dev-utils/object-utils';
+import {
+  App,
+  WorkspaceLeaf
+} from 'obsidian-test-mocks/obsidian';
 import {
   describe,
   expect,
-  it,
-  vi
+  it
 } from 'vitest';
 
-const ItemViewMock = vi.hoisted(() => {
-  return class {
-    public contentEl: HTMLElement = activeDocument.createElement('div');
-    public leaf: unknown;
-
-    public constructor(leaf: unknown) {
-      this.leaf = leaf;
-    }
-  };
-});
-
-vi.mock('obsidian', () => ({
-  ItemView: ItemViewMock
-}));
-
-// eslint-disable-next-line import-x/first, import-x/imports-first -- vi.mock must precede imports.
 import {
   SAMPLE_VIEW_TYPE,
   SampleView
@@ -37,7 +21,9 @@ describe('SAMPLE_VIEW_TYPE', () => {
 
 describe('SampleView', () => {
   function createView(): SampleView {
-    return new SampleView(castTo<WorkspaceLeaf>({}));
+    const app = App.createConfigured__();
+    const leaf = WorkspaceLeaf.create2__(app);
+    return new SampleView(leaf.asOriginalType3__());
   }
 
   it('should create an instance', () => {

@@ -1,17 +1,9 @@
 import {
   describe,
   expect,
-  it,
-  vi
+  it
 } from 'vitest';
 
-vi.mock('obsidian', () => ({
-  moment: {
-    duration: vi.fn(() => ({ hours: 12, minutes: 34 }))
-  }
-}));
-
-// eslint-disable-next-line import-x/first, import-x/imports-first -- vi.mock must precede imports.
 import {
   PluginSettings,
   TypedItem
