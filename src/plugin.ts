@@ -41,10 +41,13 @@ import {
 } from './views/sample-view.ts';
 
 export class Plugin extends PluginBase {
-  private pluginSettingsComponent!: PluginSettingsComponent;
+  public override onunload(): void {
+    super.onunload();
+    new Notice('Sample plugin is being unloaded');
+  }
 
   protected override onloadImpl(): void {
-    this.pluginSettingsComponent = this.addChild(
+    const pluginSettingsComponent = this.addChild(
       new PluginSettingsComponent({
         dataHandler: new PluginDataHandler(this),
         pluginEventSource: new PluginEventSourceImpl(this)
@@ -55,7 +58,7 @@ export class Plugin extends PluginBase {
         plugin: this,
         pluginSettingsTab: new PluginSettingsTab({
           plugin: this,
-          pluginSettingsComponent: this.pluginSettingsComponent
+          pluginSettingsComponent
         })
       })
     );
@@ -112,11 +115,6 @@ export class Plugin extends PluginBase {
     this.registerView(SAMPLE_REACT_VIEW_TYPE, (leaf) => new SampleReactView(leaf));
 
     this.registerModalCommands();
-  }
-
-  public override onunload(): void {
-    super.onunload();
-    new Notice('Sample plugin is being unloaded');
   }
 
   private handleSampleCodeBlockProcessor(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext): void {
