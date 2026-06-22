@@ -1,3 +1,4 @@
+import { sleep } from 'obsidian-dev-utils/async';
 import { AppContext } from 'obsidian-dev-utils/obsidian/react/app-context';
 import { App } from 'obsidian-test-mocks/obsidian';
 import { createElement } from 'react';
@@ -30,16 +31,14 @@ describe('SampleReactComponent', () => {
     const root = createRoot(container);
     const app = createAppWithVaultName();
 
-    await new Promise<void>((resolve) => {
-      root.render(
-        createElement(
-          AppContext.Provider,
-          { value: app.asOriginalType__() },
-          createElement(SampleReactComponent, { startCount: START_COUNT })
-        )
-      );
-      window.setTimeout(resolve, 0);
-    });
+    root.render(
+      createElement(
+        AppContext.Provider,
+        { value: app.asOriginalType__() },
+        createElement(SampleReactComponent, { startCount: START_COUNT })
+      )
+    );
+    await sleep(0);
 
     expect(container.textContent).toContain(String(START_COUNT));
     root.unmount();
@@ -52,16 +51,14 @@ describe('SampleReactComponent', () => {
     const root = createRoot(container);
     const app = createAppWithVaultName();
 
-    await new Promise<void>((resolve) => {
-      root.render(
-        createElement(
-          AppContext.Provider,
-          { value: app.asOriginalType__() },
-          createElement(SampleReactComponent, { startCount: START_COUNT })
-        )
-      );
-      window.setTimeout(resolve, 0);
-    });
+    root.render(
+      createElement(
+        AppContext.Provider,
+        { value: app.asOriginalType__() },
+        createElement(SampleReactComponent, { startCount: START_COUNT })
+      )
+    );
+    await sleep(0);
 
     expect(container.textContent).toContain(VAULT_NAME);
     root.unmount();
@@ -74,25 +71,21 @@ describe('SampleReactComponent', () => {
     const root = createRoot(container);
     const app = createAppWithVaultName();
 
-    await new Promise<void>((resolve) => {
-      root.render(
-        createElement(
-          AppContext.Provider,
-          { value: app.asOriginalType__() },
-          createElement(SampleReactComponent, { startCount: START_COUNT })
-        )
-      );
-      window.setTimeout(resolve, 0);
-    });
+    root.render(
+      createElement(
+        AppContext.Provider,
+        { value: app.asOriginalType__() },
+        createElement(SampleReactComponent, { startCount: START_COUNT })
+      )
+    );
+    await sleep(0);
 
     const button = container.querySelector('button');
     expect(button).not.toBeNull();
 
     button?.click();
 
-    await new Promise<void>((resolve) => {
-      window.setTimeout(resolve, 0);
-    });
+    await sleep(0);
 
     const EXPECTED_COUNT = START_COUNT + 1;
     expect(container.textContent).toContain(String(EXPECTED_COUNT));
