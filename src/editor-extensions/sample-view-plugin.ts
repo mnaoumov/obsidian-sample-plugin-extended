@@ -22,7 +22,13 @@ class SampleViewPlugin implements PluginValue {
     this.decorations = this.buildDecorations(view);
   }
 
-  public buildDecorations(view: EditorView): DecorationSet {
+  public update(update: ViewUpdate): void {
+    if (update.docChanged || update.viewportChanged) {
+      this.decorations = this.buildDecorations(update.view);
+    }
+  }
+
+  private buildDecorations(view: EditorView): DecorationSet {
     const OFFSET = 2;
     const builder = new RangeSetBuilder<Decoration>();
 
@@ -47,12 +53,6 @@ class SampleViewPlugin implements PluginValue {
     }
 
     return builder.finish();
-  }
-
-  public update(update: ViewUpdate): void {
-    if (update.docChanged || update.viewportChanged) {
-      this.decorations = this.buildDecorations(update.view);
-    }
   }
 }
 
