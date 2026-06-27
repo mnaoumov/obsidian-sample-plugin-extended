@@ -1,10 +1,13 @@
-import type { ReadonlyPluginSettingsState } from 'obsidian-dev-utils/obsidian/components/plugin-settings-component';
+import type { PluginNoticeComponent } from 'obsidian-dev-utils/obsidian/components/plugin-notice-component';
+import type {
+  PluginSettingsComponentBaseOnSaveSettingsParams,
+  ReadonlyPluginSettingsState
+} from 'obsidian-dev-utils/obsidian/components/plugin-settings-component';
 import type { DataHandler } from 'obsidian-dev-utils/obsidian/data-handler';
 import type { PluginEventSource } from 'obsidian-dev-utils/obsidian/plugin/plugin-event-source';
 import type { MaybeReturn } from 'obsidian-dev-utils/type';
 import type { GenericObject } from 'obsidian-dev-utils/type-guards';
 
-import { Notice } from 'obsidian';
 import { PluginSettingsComponentBase } from 'obsidian-dev-utils/obsidian/components/plugin-settings-component';
 
 import {
@@ -15,7 +18,10 @@ import {
 interface PluginSettingsComponentConstructorParams {
   readonly dataHandler: DataHandler;
   readonly pluginEventSource: PluginEventSource;
+  readonly pluginNoticeComponent: PluginNoticeComponent;
 }
+
+type PluginSettingsComponentOnSaveSettingsParams = PluginSettingsComponentBaseOnSaveSettingsParams<PluginSettings>;
 
 interface SerializedSettings {
   typedDropdownSetting: string;
@@ -23,11 +29,14 @@ interface SerializedSettings {
 }
 
 export class PluginSettingsComponent extends PluginSettingsComponentBase<PluginSettings> {
+  private readonly pluginNoticeComponent: PluginNoticeComponent;
+
   public constructor(params: PluginSettingsComponentConstructorParams) {
     super({
       ...params,
       pluginSettingsClass: PluginSettings
     });
+    this.pluginNoticeComponent = params.pluginNoticeComponent;
   }
 
   protected override async onLoadRecord(record: GenericObject): Promise<void> {
@@ -50,18 +59,15 @@ export class PluginSettingsComponent extends PluginSettingsComponentBase<PluginS
   ): Promise<void> {
     await super.onLoadSettings(loadedState, isInitialLoad);
     if (loadedState.effectiveValues.textSetting === 'bar') {
-      new Notice('Sample text setting is bar');
+      this.pluginNoticeComponent.showNotice('Sample text setting is bar');
     }
   }
 
-  protected override async onSaveSettings(
-    newState: ReadonlyPluginSettingsState<PluginSettings>,
-    oldState: ReadonlyPluginSettingsState<PluginSettings>,
-    context: unknown
-  ): Promise<void> {
-    await super.onSaveSettings(newState, oldState, context);
+  protected override async onSaveSettings(params: PluginSettingsComponentOnSaveSettingsParams): Promise<void> {
+    await super.onSaveSettings(params);
+    const { newState, oldState } = params;
     if (newState.effectiveValues.textSetting === 'baz' && oldState.effectiveValues.textSetting === 'bar') {
-      new Notice('Sample text setting is changed from bar to baz');
+      this.pluginNoticeComponent.showNotice('Sample text setting is changed from bar to baz');
     }
   }
 

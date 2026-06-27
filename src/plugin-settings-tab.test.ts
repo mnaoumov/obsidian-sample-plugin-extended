@@ -2,13 +2,13 @@ import type {
   App as AppOriginal,
   Plugin
 } from 'obsidian';
+import type { PluginNoticeComponent } from 'obsidian-dev-utils/obsidian/components/plugin-notice-component';
 import type { PluginSettingsComponentBase } from 'obsidian-dev-utils/obsidian/components/plugin-settings-component';
 import type { MockInstance } from 'vitest';
 
 import {
   ButtonComponent,
-  ExtraButtonComponent,
-  Notice
+  ExtraButtonComponent
 } from 'obsidian';
 import { castTo } from 'obsidian-dev-utils/object-utils';
 import { PluginSettingsTabBase } from 'obsidian-dev-utils/obsidian/plugin/plugin-settings-tab';
@@ -29,11 +29,6 @@ import type { PluginSettings } from './plugin-settings.ts';
 
 import { PluginSettingsTab } from './plugin-settings-tab.ts';
 
-vi.mock('obsidian', async (importOriginal) => ({
-  ...await importOriginal<typeof import('obsidian')>(),
-  Notice: vi.fn()
-}));
-
 interface BindOptionsExt {
   componentToPluginSettingsValueConverter?(uiValue: string): unknown;
   onChanged?(newValue: unknown, oldValue: unknown): void;
@@ -42,12 +37,13 @@ interface BindOptionsExt {
 
 describe('PluginSettingsTab', () => {
   let app: AppOriginal;
-  let bindSpy: MockInstance;
+  let bindSpy: MockInstance<PluginSettingsTab['bind']>;
   let setNameSpy: MockInstance;
   let buttonOnClickSpy: MockInstance;
   let extraButtonOnClickSpy: MockInstance;
   let fileOnChangeSpy: MockInstance;
   let multipleFileOnChangeSpy: MockInstance;
+  let showNoticeMock: PluginNoticeComponent['showNotice'];
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -58,12 +54,12 @@ describe('PluginSettingsTab', () => {
     // While keeping the real base + real `SettingEx` + real rendered components. The stub also
     // Drives the source-provided option callbacks (converters / onChanged) the way the real
     // `bind` would, so those closures stay exercised.
-    bindSpy = vi.spyOn(PluginSettingsTabBase.prototype, 'bind').mockImplementation((valueComponent, _propertyName, options) => {
-      const optionsExt = castTo<BindOptionsExt | undefined>(options);
-      optionsExt?.onChanged?.(undefined, undefined);
-      optionsExt?.componentToPluginSettingsValueConverter?.('test (converted)');
-      optionsExt?.pluginSettingsToComponentValueConverter?.('test');
-      return valueComponent;
+    bindSpy = vi.spyOn(PluginSettingsTabBase.prototype, 'bind').mockImplementation((params) => {
+      const paramsExt = castTo<BindOptionsExt>(params);
+      paramsExt.onChanged?.(undefined, undefined);
+      paramsExt.componentToPluginSettingsValueConverter?.('test (converted)');
+      paramsExt.pluginSettingsToComponentValueConverter?.('test');
+      return params.valueComponent;
     });
 
     setNameSpy = vi.spyOn(SettingEx.prototype, 'setName');
@@ -92,7 +88,13 @@ describe('PluginSettingsTab', () => {
       })
     });
 
-    return new PluginSettingsTab({ plugin, pluginSettingsComponent });
+    showNoticeMock = vi.fn<PluginNoticeComponent['showNotice']>();
+
+    return new PluginSettingsTab({
+      plugin,
+      pluginNoticeComponent: strictProxy<PluginNoticeComponent>({ showNotice: showNoticeMock }),
+      pluginSettingsComponent
+    });
   }
 
   function callDisplay(tab: PluginSettingsTab): void {
@@ -100,7 +102,7 @@ describe('PluginSettingsTab', () => {
   }
 
   function getBoundKeys(): unknown[] {
-    return bindSpy.mock.calls.map((call): unknown => call[1]);
+    return bindSpy.mock.calls.map((call): unknown => call[0].propertyName);
   }
 
   it('should create an instance', () => {
@@ -277,7 +279,7 @@ describe('PluginSettingsTab', () => {
     callDisplay(tab);
     const onClickHandler = castTo<() => void>(buttonOnClickSpy.mock.calls[0]?.[0]);
     onClickHandler();
-    expect(Notice).toHaveBeenCalledWith('Button clicked');
+    expect(showNoticeMock).toHaveBeenCalledWith('Button clicked');
   });
 
   it('should show Notice when extra button is clicked', () => {
@@ -285,7 +287,7 @@ describe('PluginSettingsTab', () => {
     callDisplay(tab);
     const onClickHandler = castTo<() => void>(extraButtonOnClickSpy.mock.calls[0]?.[0]);
     onClickHandler();
-    expect(Notice).toHaveBeenCalledWith('Extra button clicked');
+    expect(showNoticeMock).toHaveBeenCalledWith('Extra button clicked');
   });
 
   it('should show Notice when file is selected with null', () => {
@@ -293,7 +295,7 @@ describe('PluginSettingsTab', () => {
     callDisplay(tab);
     const onChangeHandler = castTo<(value: File | null) => void>(fileOnChangeSpy.mock.calls[0]?.[0]);
     onChangeHandler(null);
-    expect(Notice).toHaveBeenCalledWith('File selected: (None)');
+    expect(showNoticeMock).toHaveBeenCalledWith('File selected: (None)');
   });
 
   it('should show Notice when multiple files are selected', () => {
@@ -301,6 +303,6 @@ describe('PluginSettingsTab', () => {
     callDisplay(tab);
     const onChangeHandler = castTo<(value: File[]) => void>(multipleFileOnChangeSpy.mock.calls[0]?.[0]);
     onChangeHandler(castTo<File[]>([{ name: 'test.md' }]));
-    expect(Notice).toHaveBeenCalledWith('Files selected: test.md');
+    expect(showNoticeMock).toHaveBeenCalledWith('Files selected: test.md');
   });
 });

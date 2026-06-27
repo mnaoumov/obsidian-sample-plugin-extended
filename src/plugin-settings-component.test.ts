@@ -1,8 +1,8 @@
+import type { PluginNoticeComponent } from 'obsidian-dev-utils/obsidian/components/plugin-notice-component';
 import type { PluginSettingsState } from 'obsidian-dev-utils/obsidian/components/plugin-settings-component';
 import type { DataHandler } from 'obsidian-dev-utils/obsidian/data-handler';
 import type { PluginEventSource } from 'obsidian-dev-utils/obsidian/plugin/plugin-event-source';
 
-import { Notice } from 'obsidian';
 import { castTo } from 'obsidian-dev-utils/object-utils';
 import { PluginSettingsComponentBase } from 'obsidian-dev-utils/obsidian/components/plugin-settings-component';
 import { strictProxy } from 'obsidian-dev-utils/strict-proxy';
@@ -22,7 +22,7 @@ import {
 interface ProtectedBase {
   onLoadRecord(record: unknown): Promise<void>;
   onLoadSettings(loadedState: unknown, isInitialLoad: boolean): Promise<void>;
-  onSaveSettings(newState: unknown, oldState: unknown, context: unknown): Promise<void>;
+  onSaveSettings(params: unknown): Promise<void>;
   onSavingRecord(record: unknown): Promise<void>;
   registerValidator(key: string, validator: unknown): void;
   registerValidators(): void;
@@ -35,16 +35,15 @@ interface RegisteredValidator {
 
 const protectedBasePrototype = castTo<ProtectedBase>(PluginSettingsComponentBase.prototype);
 
-vi.mock('obsidian', async (importOriginal) => ({
-  ...await importOriginal<typeof import('obsidian')>(),
-  Notice: vi.fn()
-}));
-
 describe('PluginSettingsComponent', () => {
+  let showNoticeMock: PluginNoticeComponent['showNotice'];
+
   function createComponent(): PluginSettingsComponent {
+    showNoticeMock = vi.fn<PluginNoticeComponent['showNotice']>();
     return new PluginSettingsComponent({
       dataHandler: strictProxy<DataHandler>({}),
-      pluginEventSource: strictProxy<PluginEventSource>({})
+      pluginEventSource: strictProxy<PluginEventSource>({}),
+      pluginNoticeComponent: strictProxy<PluginNoticeComponent>({ showNotice: showNoticeMock })
     });
   }
 
@@ -103,19 +102,17 @@ describe('PluginSettingsComponent', () => {
 
   describe('onLoadSettings', () => {
     it('should show notice when textSetting is bar', async () => {
-      vi.mocked(Notice).mockClear();
       const component = createComponent();
       const state = castTo<PluginSettingsState<PluginSettings>>({ effectiveValues: { textSetting: 'bar' } });
       await component['onLoadSettings'](state, false);
-      expect(Notice).toHaveBeenCalledWith('Sample text setting is bar');
+      expect(showNoticeMock).toHaveBeenCalledWith('Sample text setting is bar');
     });
 
     it('should not show notice when textSetting is not bar', async () => {
-      vi.mocked(Notice).mockClear();
       const component = createComponent();
       const state = castTo<PluginSettingsState<PluginSettings>>({ effectiveValues: { textSetting: 'other' } });
       await component['onLoadSettings'](state, false);
-      expect(Notice).not.toHaveBeenCalled();
+      expect(showNoticeMock).not.toHaveBeenCalled();
     });
 
     it('should call super.onLoadSettings', async () => {
@@ -129,30 +126,27 @@ describe('PluginSettingsComponent', () => {
 
   describe('onSaveSettings', () => {
     it('should show notice when changed from bar to baz', async () => {
-      vi.mocked(Notice).mockClear();
       const component = createComponent();
       const newState = castTo<PluginSettingsState<PluginSettings>>({ effectiveValues: { textSetting: 'baz' } });
       const oldState = castTo<PluginSettingsState<PluginSettings>>({ effectiveValues: { textSetting: 'bar' } });
-      await component['onSaveSettings'](newState, oldState, undefined);
-      expect(Notice).toHaveBeenCalledWith('Sample text setting is changed from bar to baz');
+      await component['onSaveSettings']({ context: undefined, newState, oldState });
+      expect(showNoticeMock).toHaveBeenCalledWith('Sample text setting is changed from bar to baz');
     });
 
     it('should not show notice when changed from something else to baz', async () => {
-      vi.mocked(Notice).mockClear();
       const component = createComponent();
       const newState = castTo<PluginSettingsState<PluginSettings>>({ effectiveValues: { textSetting: 'baz' } });
       const oldState = castTo<PluginSettingsState<PluginSettings>>({ effectiveValues: { textSetting: 'other' } });
-      await component['onSaveSettings'](newState, oldState, undefined);
-      expect(Notice).not.toHaveBeenCalled();
+      await component['onSaveSettings']({ context: undefined, newState, oldState });
+      expect(showNoticeMock).not.toHaveBeenCalled();
     });
 
     it('should not show notice when baz to bar', async () => {
-      vi.mocked(Notice).mockClear();
       const component = createComponent();
       const newState = castTo<PluginSettingsState<PluginSettings>>({ effectiveValues: { textSetting: 'bar' } });
       const oldState = castTo<PluginSettingsState<PluginSettings>>({ effectiveValues: { textSetting: 'baz' } });
-      await component['onSaveSettings'](newState, oldState, undefined);
-      expect(Notice).not.toHaveBeenCalled();
+      await component['onSaveSettings']({ context: undefined, newState, oldState });
+      expect(showNoticeMock).not.toHaveBeenCalled();
     });
 
     it('should call super.onSaveSettings', async () => {
@@ -160,8 +154,8 @@ describe('PluginSettingsComponent', () => {
       const superSpy = vi.spyOn(protectedBasePrototype, 'onSaveSettings');
       const newState = castTo<PluginSettingsState<PluginSettings>>({ effectiveValues: { textSetting: 'other' } });
       const oldState = castTo<PluginSettingsState<PluginSettings>>({ effectiveValues: { textSetting: 'other' } });
-      await component['onSaveSettings'](newState, oldState, undefined);
-      expect(superSpy).toHaveBeenCalledWith(newState, oldState, undefined);
+      await component['onSaveSettings']({ context: undefined, newState, oldState });
+      expect(superSpy).toHaveBeenCalledWith({ context: undefined, newState, oldState });
     });
   });
 
