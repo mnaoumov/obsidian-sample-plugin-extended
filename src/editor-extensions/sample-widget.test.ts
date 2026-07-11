@@ -8,7 +8,7 @@ import {
 const WidgetTypeMock = vi.hoisted(() => {
   return class {
     public toDOM(): HTMLElement {
-      return activeDocument.createElement('span');
+      return activeWindow.createSpan();
     }
   };
 });

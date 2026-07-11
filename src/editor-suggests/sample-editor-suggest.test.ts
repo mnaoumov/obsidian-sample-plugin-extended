@@ -93,7 +93,7 @@ describe('SampleEditorSuggest', () => {
   describe('renderSuggestion', () => {
     it('should create strong element with suggestion text', () => {
       const suggest = createSuggest();
-      const el = activeDocument.createElement('div');
+      const el = activeWindow.createDiv();
       suggest.renderSuggestion('test value', el);
       const strong = el.querySelector('strong');
       expect(strong).not.toBeNull();

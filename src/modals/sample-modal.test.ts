@@ -5,16 +5,16 @@ import {
   it
 } from 'vitest';
 
-import { SampleModal } from './sample-modal.ts';
+import { SamplePluginModal } from './sample-modal.ts';
 
-describe('SampleModal', () => {
-  function createModal(): SampleModal {
-    return new SampleModal(App.createConfigured__().asOriginalType__());
+describe('SamplePluginModal', () => {
+  function createModal(): SamplePluginModal {
+    return new SamplePluginModal(App.createConfigured__().asOriginalType__());
   }
 
   it('should create an instance', () => {
     const modal = createModal();
-    expect(modal).toBeInstanceOf(SampleModal);
+    expect(modal).toBeInstanceOf(SamplePluginModal);
   });
 
   it('should set text to "Sample modal" on open', () => {

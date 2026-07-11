@@ -380,7 +380,7 @@ describe('SamplePluginExtendedComponent', () => {
     it('should show notice on dblclick DOM event with element target', () => {
       component.onload();
       const domCallback = domEventSpy.mock.calls[0]?.[2] as ((evt: MouseEvent) => void) | undefined;
-      const el = activeDocument.createElement('div');
+      const el = activeWindow.createDiv();
       const evt = new MouseEvent('dblclick', { bubbles: true });
       Object.defineProperty(evt, 'target', { value: el });
       domCallback?.(evt);
@@ -439,7 +439,7 @@ describe('SamplePluginExtendedComponent', () => {
     it('should set text in code block processor', async () => {
       component.onload();
       const cbpCallback = registerMarkdownCodeBlockProcessorSpy.mock.calls[0]?.[0].handler;
-      const el = activeDocument.createElement('div');
+      const el = activeWindow.createDiv();
       await cbpCallback?.('source code', el, strictProxy<MarkdownPostProcessorContext>({}));
       expect(el.textContent).toBe('Sample code block processor');
     });
@@ -447,7 +447,7 @@ describe('SamplePluginExtendedComponent', () => {
     it('should set text in markdown post processor when el has el-h6 class', async () => {
       component.onload();
       const mppCallback = registerMarkdownPostProcessorSpy.mock.calls[0]?.[0].postProcessor;
-      const el = activeDocument.createElement('div');
+      const el = activeWindow.createDiv();
       el.addClass('el-h6');
       await mppCallback?.(el, strictProxy<MarkdownPostProcessorContext>({}));
       expect(el.textContent).toBe('Sample markdown post processor');
@@ -456,7 +456,7 @@ describe('SamplePluginExtendedComponent', () => {
     it('should not change text in markdown post processor when el does not have el-h6 class', async () => {
       component.onload();
       const mppCallback = registerMarkdownPostProcessorSpy.mock.calls[0]?.[0].postProcessor;
-      const el = activeDocument.createElement('div');
+      const el = activeWindow.createDiv();
       await mppCallback?.(el, strictProxy<MarkdownPostProcessorContext>({}));
       expect(el.textContent).toBe('');
     });

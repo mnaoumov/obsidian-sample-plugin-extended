@@ -31,7 +31,7 @@ import { selectItem } from 'obsidian-dev-utils/obsidian/modals/select-item';
 import { sampleStateField } from './editor-extensions/sample-state-field.ts';
 import { sampleViewPlugin } from './editor-extensions/sample-view-plugin.ts';
 import { SampleEditorSuggest } from './editor-suggests/sample-editor-suggest.ts';
-import { SampleModal } from './modals/sample-modal.ts';
+import { SamplePluginModal } from './modals/sample-modal.ts';
 import {
   SAMPLE_REACT_VIEW_TYPE,
   SampleReactView
@@ -317,7 +317,7 @@ export class SamplePluginExtendedComponent extends LayoutReadyComponent {
   }
 
   private showSampleModal(): void {
-    new SampleModal(this.app).open();
+    new SamplePluginModal(this.app).open();
   }
 
   private async showSelectItem(): Promise<void> {

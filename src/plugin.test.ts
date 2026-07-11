@@ -1,15 +1,10 @@
-import type {
-  App as AppType,
-  PluginManifest
-} from 'obsidian';
+import type { PluginManifest } from 'obsidian';
 
 import { Component } from 'obsidian';
 import { PluginNoticeComponent } from 'obsidian-dev-utils/obsidian/components/plugin-notice-component';
 import { PluginSettingsTabComponent } from 'obsidian-dev-utils/obsidian/components/plugin-settings-tab-component';
-import { ensureGenericObject } from 'obsidian-dev-utils/type-guards';
 import { App } from 'obsidian-test-mocks/obsidian';
 import {
-  afterEach,
   beforeEach,
   describe,
   expect,
@@ -113,23 +108,11 @@ import { Plugin } from './plugin.ts';
 describe('Plugin', () => {
   let app: App;
   let manifest: PluginManifest;
-  let savedGlobalApp: AppType;
 
   beforeEach(() => {
     vi.clearAllMocks();
     app = App.createConfigured__();
     const appOriginal = app.asOriginalType__();
-
-    /*
-     * The real base loads `PluginNoticeComponent` and friends, which read
-     * `obsidianDevUtilsState` off the app (and off the global `app` when resolved
-     * implicitly). Seed it on the same holder the base uses.
-     */
-    ensureGenericObject(appOriginal)['obsidianDevUtilsState'] = {};
-    // eslint-disable-next-line @typescript-eslint/dot-notation, @typescript-eslint/no-deprecated -- Test setup: window.app is deprecated but required so implicitly-resolved app lookups share the configured app.
-    savedGlobalApp = ensureGenericObject(window)['app'];
-    // eslint-disable-next-line @typescript-eslint/dot-notation, @typescript-eslint/no-deprecated -- Test setup: window.app is deprecated but required so implicitly-resolved app lookups share the configured app.
-    ensureGenericObject(window)['app'] = appOriginal;
 
     // Fire layout-ready synchronously so the real lifecycle completes within the test.
     appOriginal.workspace.onLayoutReady = vi.fn((callback: () => void) => {
@@ -144,11 +127,6 @@ describe('Plugin', () => {
       name: 'Test Plugin',
       version: '1.0.0'
     };
-  });
-
-  afterEach(() => {
-    // eslint-disable-next-line @typescript-eslint/dot-notation, @typescript-eslint/no-deprecated -- Test teardown: restoring window.app.
-    ensureGenericObject(window)['app'] = savedGlobalApp;
   });
 
   it('should wire up all child components on load', async () => {
