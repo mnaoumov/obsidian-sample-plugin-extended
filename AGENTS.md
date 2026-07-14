@@ -11,7 +11,3 @@ Sample Plugin Extended is a showcase/template plugin demonstrating the `obsidian
 The workspace convention is that all plugins share the same architecture; intentional deviations are documented here.
 
 - **Uses Svelte** — the only workspace plugin that does. It declares a `svelte` devDependency (`svelte@^5.56.4`) and ships a sample component at `src/svelte-components/sample-svelte-component.svelte`, included to demonstrate a Svelte UI inside an Obsidian plugin. `.svelte` files are bundled by the esbuild `build` step (`scripts/build.ts`); there is no separate `build:compile:svelte` script.
-
-## Known Issues
-
-None.
