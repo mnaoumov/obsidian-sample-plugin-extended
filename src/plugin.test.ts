@@ -25,6 +25,27 @@ import { SamplePluginExtendedComponent } from './sample-plugin-extended-componen
  * is added as a child returns a real `Component`.
  */
 
+// The shared command handler component is now constructed and registered by PluginBase itself, so the mock exposes the registerCommandHandlers spy the base calls at load.
+const { registerCommandHandlers } = vi.hoisted(() => ({ registerCommandHandlers: vi.fn() }));
+
+vi.mock('obsidian-dev-utils/obsidian/command-handlers/command-handler-component', () => ({
+  // eslint-disable-next-line prefer-arrow-callback, func-names -- mock must be constructable with `new` and return a loadable Component exposing registerCommandHandlers.
+  CommandHandlerComponent: vi.fn(function (): Component {
+    return Object.assign(new Component(), { registerCommandHandlers });
+  })
+}));
+
+vi.mock('obsidian-dev-utils/obsidian/components/menu-event-registrar-component', () => ({
+  // eslint-disable-next-line prefer-arrow-callback, func-names -- mock must be constructable with `new` and return a loadable Component.
+  MenuEventRegistrarComponent: vi.fn(function (): Component {
+    return new Component();
+  })
+}));
+
+vi.mock('obsidian-dev-utils/obsidian/active-file-provider', () => ({
+  AppActiveFileProvider: vi.fn()
+}));
+
 vi.mock('obsidian-dev-utils/obsidian/data-handler', () => ({
   PluginDataHandler: vi.fn()
 }));
