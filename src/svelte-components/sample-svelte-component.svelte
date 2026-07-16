@@ -1,9 +1,12 @@
 <script lang="ts">
   import type { SampleSvelteComponentProps } from './sample-svelte-component.d.ts';
 
+  import { untrack } from 'svelte';
+
   let { startCount }: SampleSvelteComponentProps = $props();
 
-  let count = $state(startCount);
+  // Seed local `count` from the initial `startCount` prop; `increment` mutates it and it intentionally does not track later prop changes.
+  let count = $state(untrack(() => startCount));
 
   export function increment() {
     count += 1;
