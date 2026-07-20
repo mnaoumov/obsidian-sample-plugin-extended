@@ -1,3 +1,4 @@
+import { OpenDemoVaultCommandHandler } from 'obsidian-dev-utils/obsidian/command-handlers/open-demo-vault-command-handler';
 import { PluginCommandRegistrar } from 'obsidian-dev-utils/obsidian/command-registrar';
 import { PluginSettingsTabComponent } from 'obsidian-dev-utils/obsidian/components/plugin-settings-tab-component';
 import { PluginDataHandler } from 'obsidian-dev-utils/obsidian/data-handler';
@@ -61,5 +62,14 @@ export class Plugin extends PluginBase {
         viewRegistrar: new PluginViewRegistrar(this)
       })
     );
+
+    this.commandHandlerComponent.registerCommandHandlers([
+      new OpenDemoVaultCommandHandler({
+        app: this.app,
+        pluginId: this.manifest.id,
+        pluginNoticeComponent: this.pluginNoticeComponent,
+        pluginVersion: this.manifest.version
+      })
+    ]);
   }
 }

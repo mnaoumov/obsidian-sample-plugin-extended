@@ -1,6 +1,7 @@
 import type { PluginManifest } from 'obsidian';
 
 import { Component } from 'obsidian';
+import { OpenDemoVaultCommandHandler } from 'obsidian-dev-utils/obsidian/command-handlers/open-demo-vault-command-handler';
 import { PluginNoticeComponent } from 'obsidian-dev-utils/obsidian/components/plugin-notice-component';
 import { PluginSettingsTabComponent } from 'obsidian-dev-utils/obsidian/components/plugin-settings-tab-component';
 import { App } from 'obsidian-test-mocks/obsidian';
@@ -160,6 +161,15 @@ describe('Plugin', () => {
     expect(PluginSettingsTab).toHaveBeenCalledOnce();
     expect(PluginSettingsTabComponent).toHaveBeenCalledOnce();
     expect(SamplePluginExtendedComponent).toHaveBeenCalledOnce();
+  });
+
+  it('should register the open demo vault command handler', async () => {
+    const plugin = new Plugin(app.asOriginalType__(), manifest);
+    await plugin.onload();
+
+    expect(registerCommandHandlers).toHaveBeenCalledWith(
+      expect.arrayContaining([expect.any(OpenDemoVaultCommandHandler)])
+    );
   });
 
   it('should show a notice on unload', async () => {
