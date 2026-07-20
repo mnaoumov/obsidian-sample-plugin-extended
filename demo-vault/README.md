@@ -1,9 +1,8 @@
-# Sample Plugin Extended demo vault
+This is an [Obsidian](https://obsidian.md/) vault demonstrating features of the [Sample Plugin Extended](https://github.com/mnaoumov/obsidian-sample-plugin-extended) plugin.
 
-A small Obsidian vault that demonstrates the [Sample Plugin Extended](https://github.com/mnaoumov/obsidian-sample-plugin-extended) plugin - a sample/template plugin showcasing the building blocks of a real Obsidian plugin: commands, a ribbon icon, a status bar item, modals, editor extensions, an editor suggest, side views, and a full settings tab.
+## Opening this vault
 
-Open [00 Start](<./00 Start.md>) and work through the notes. Run the sample commands, click the ribbon icon, and watch the notices in the top-right corner.
+- **If you already have the plugin installed**, run the **Sample Plugin Extended: Open demo vault** command — it downloads and opens the latest demo vault automatically.
+- **Otherwise**, download `sample-plugin-extended.demo-vault.zip` from the [plugin releases](https://github.com/mnaoumov/obsidian-sample-plugin-extended/releases), unzip it, and in Obsidian choose `Manage vaults...` → `Open folder as vault` → select the unzipped folder.
 
-## First open
-
-The first time you open this vault, Obsidian treats it as **untrusted**, so the bundled plugins are listed but not loaded until you **Trust author and enable plugins** and reload. After that, the Demo Vault Helper opens the start note for you.
+On first open, Obsidian treats the vault as untrusted — choose **Trust author and enable plugins** (or enable Community plugins manually), then open [00 Start](<./00 Start.md>).
