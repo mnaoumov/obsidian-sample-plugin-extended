@@ -22,7 +22,7 @@ await wrapCliTask(async () => {
   if (manifest.id === TEMPLATE_PLUGIN_ID) {
     throw new Error(
       `Releasing is disabled for the template repo (plugin id "${TEMPLATE_PLUGIN_ID}"). `
-      + 'Set your own id in manifest.json to enable releases, or remove this guard in scripts/version.ts.'
+        + 'Set your own id in manifest.json to enable releases, or remove this guard in scripts/version.ts.'
     );
   }
 
