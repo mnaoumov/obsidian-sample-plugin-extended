@@ -1,6 +1,7 @@
 import type {
   App as AppOriginal,
-  Plugin
+  Plugin,
+  SettingGroup
 } from 'obsidian';
 import type { PluginNoticeComponent } from 'obsidian-dev-utils/obsidian/components/plugin-notice-component';
 import type { PluginSettingsComponentBase } from 'obsidian-dev-utils/obsidian/components/plugin-settings-component';
@@ -38,7 +39,6 @@ interface BindOptionsExt {
 describe('PluginSettingsTab', () => {
   let app: AppOriginal;
   let bindSpy: MockInstance<PluginSettingsTab['bind']>;
-  let setNameSpy: MockInstance;
   let buttonOnClickSpy: MockInstance;
   let extraButtonOnClickSpy: MockInstance;
   let fileOnChangeSpy: MockInstance;
@@ -62,7 +62,6 @@ describe('PluginSettingsTab', () => {
       return params.valueComponent;
     });
 
-    setNameSpy = vi.spyOn(SettingEx.prototype, 'setName');
     buttonOnClickSpy = vi.spyOn(ButtonComponent.prototype, 'onClick');
     extraButtonOnClickSpy = vi.spyOn(ExtraButtonComponent.prototype, 'onClick');
     fileOnChangeSpy = vi.spyOn(FileComponent.prototype, 'onChange');
@@ -97,8 +96,18 @@ describe('PluginSettingsTab', () => {
     });
   }
 
+  /**
+   * Invokes every declared row's `render` callback the way Obsidian does when the tab is opened, so the
+   * bindings are still exercised now that the rows are declarative.
+   *
+   * @param tab - The settings tab.
+   */
   function callDisplay(tab: PluginSettingsTab): void {
-    tab.displayLegacy();
+    for (const definition of tab.getSettingDefinitions()) {
+      if ('render' in definition) {
+        definition.render(new SettingEx(tab.containerEl), castTo<SettingGroup>(null));
+      }
+    }
   }
 
   function getBoundKeys(): unknown[] {
@@ -110,24 +119,16 @@ describe('PluginSettingsTab', () => {
     expect(tab).toBeInstanceOf(PluginSettingsTab);
   });
 
-  it('should call super.displayLegacy() on displayLegacy()', () => {
-    const tab = createTab();
-    const spy = vi.spyOn(PluginSettingsTabBase.prototype, 'displayLegacy');
-    callDisplay(tab);
-    expect(spy).toHaveBeenCalled();
-  });
-
   it('should render setting elements in containerEl', () => {
     const tab = createTab();
     callDisplay(tab);
     expect(tab.containerEl.children.length).toBeGreaterThan(0);
   });
 
-  it('should create 30 setting instances', () => {
+  it('should declare 30 setting definitions', () => {
     const tab = createTab();
-    callDisplay(tab);
     const EXPECTED_SETTING_COUNT = 30;
-    expect(setNameSpy).toHaveBeenCalledTimes(EXPECTED_SETTING_COUNT);
+    expect(tab.getSettingDefinitions()).toHaveLength(EXPECTED_SETTING_COUNT);
   });
 
   it('should bind checkboxSetting', () => {
