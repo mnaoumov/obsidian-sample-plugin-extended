@@ -30,7 +30,7 @@ import type { PluginSettings } from './plugin-settings.ts';
 
 import { PluginSettingsTab } from './plugin-settings-tab.ts';
 
-interface BindOptionsExt {
+interface BindOptionsExtension {
   componentToPluginSettingsValueConverter?(uiValue: string): unknown;
   onChanged?(newValue: unknown, oldValue: unknown): void;
   pluginSettingsToComponentValueConverter?(pluginSettingsValue: string): unknown;
@@ -55,10 +55,10 @@ describe('PluginSettingsTab', () => {
     // Drives the source-provided option callbacks (converters / onChanged) the way the real
     // `bind` would, so those closures stay exercised.
     bindSpy = vi.spyOn(PluginSettingsTabBase.prototype, 'bind').mockImplementation((params) => {
-      const paramsExt = castTo<BindOptionsExt>(params);
-      paramsExt.onChanged?.(undefined, undefined);
-      paramsExt.componentToPluginSettingsValueConverter?.('test (converted)');
-      paramsExt.pluginSettingsToComponentValueConverter?.('test');
+      const paramsExtension = castTo<BindOptionsExtension>(params);
+      paramsExtension.onChanged?.(undefined, undefined);
+      paramsExtension.componentToPluginSettingsValueConverter?.('test (converted)');
+      paramsExtension.pluginSettingsToComponentValueConverter?.('test');
       return params.valueComponent;
     });
 

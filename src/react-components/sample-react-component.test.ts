@@ -26,7 +26,7 @@ describe('SampleReactComponent', () => {
 
   it('should render to the DOM with start count', async () => {
     const container = activeWindow.createDiv();
-    activeDocument.body.appendChild(container);
+    activeDocument.body.append(container);
     const root = createRoot(container);
     const app = createAppWithVaultName();
 
@@ -46,7 +46,7 @@ describe('SampleReactComponent', () => {
 
   it('should show vault name in rendered output', async () => {
     const container = activeWindow.createDiv();
-    activeDocument.body.appendChild(container);
+    activeDocument.body.append(container);
     const root = createRoot(container);
     const app = createAppWithVaultName();
 
@@ -66,7 +66,7 @@ describe('SampleReactComponent', () => {
 
   it('should increment count when button is clicked', async () => {
     const container = activeWindow.createDiv();
-    activeDocument.body.appendChild(container);
+    activeDocument.body.append(container);
     const root = createRoot(container);
     const app = createAppWithVaultName();
 

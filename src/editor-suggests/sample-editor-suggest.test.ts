@@ -105,8 +105,8 @@ describe('SampleEditorSuggest', () => {
     it('should call close', () => {
       const suggest = createSuggest();
       const closeSpy = vi.spyOn(suggest, 'close');
-      const evt = new MouseEvent('click');
-      suggest.selectSuggestion('value', evt);
+      const $event = new MouseEvent('click');
+      suggest.selectSuggestion('value', $event);
       expect(closeSpy).toHaveBeenCalled();
     });
 
@@ -122,8 +122,8 @@ describe('SampleEditorSuggest', () => {
 
       suggest.onTrigger(cursor, editor, null);
 
-      const evt = new MouseEvent('click');
-      suggest.selectSuggestion('value', evt);
+      const $event = new MouseEvent('click');
+      suggest.selectSuggestion('value', $event);
 
       expect(replaceRange).toHaveBeenCalledWith(
         expect.stringContaining('Transformed value'),
@@ -134,8 +134,8 @@ describe('SampleEditorSuggest', () => {
     it('should not replace range when editor is not set', () => {
       const suggest = createSuggest();
       const closeSpy = vi.spyOn(suggest, 'close');
-      const evt = new MouseEvent('click');
-      suggest.selectSuggestion('value', evt);
+      const $event = new MouseEvent('click');
+      suggest.selectSuggestion('value', $event);
       expect(closeSpy).toHaveBeenCalled();
     });
 
@@ -150,8 +150,8 @@ describe('SampleEditorSuggest', () => {
       });
       suggest.onTrigger(cursor, editor, null);
 
-      const evt = new KeyboardEvent('keydown');
-      suggest.selectSuggestion('test', evt);
+      const $event = new KeyboardEvent('keydown');
+      suggest.selectSuggestion('test', $event);
       expect(replaceRange).toHaveBeenCalledWith('Transformed test keydown', cursor);
     });
   });

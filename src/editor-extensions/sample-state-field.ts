@@ -30,17 +30,19 @@ class SampleStateField implements StateFieldSpec<DecorationSet> {
 
     syntaxTree(transaction.state).iterate({
       enter(node) {
-        if (node.type.name.startsWith('list')) {
-          const listCharFrom = node.from - OFFSET;
-
-          builder.add(
-            listCharFrom,
-            listCharFrom + 1,
-            Decoration.replace({
-              widget: new SampleWidget()
-            })
-          );
+        if (!node.type.name.startsWith('list')) {
+          return;
         }
+
+        const listCharFrom = node.from - OFFSET;
+
+        builder.add(
+          listCharFrom,
+          listCharFrom + 1,
+          Decoration.replace({
+            widget: new SampleWidget()
+          })
+        );
       }
     });
 
