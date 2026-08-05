@@ -2,7 +2,7 @@ import process from 'node:process';
 import { wrapCliTask } from 'obsidian-dev-utils/script-utils/cli-utils';
 import { readJson } from 'obsidian-dev-utils/script-utils/json';
 import {
-  parseVersionArgs,
+  parseVersionArguments,
   updateVersion
 } from 'obsidian-dev-utils/script-utils/version';
 
@@ -26,7 +26,7 @@ await wrapCliTask(async () => {
     );
   }
 
-  const [, , ...args] = process.argv;
-  const { options, versionUpdateType } = parseVersionArgs(args);
+  const [, , ...$arguments] = process.argv;
+  const { options, versionUpdateType } = parseVersionArguments($arguments);
   await updateVersion(versionUpdateType, options);
 });

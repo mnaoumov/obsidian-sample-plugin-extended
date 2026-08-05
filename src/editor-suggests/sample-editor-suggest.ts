@@ -35,10 +35,10 @@ export class SampleEditorSuggest extends EditorSuggest<string> {
     el.createEl('strong', { text: value });
   }
 
-  public override selectSuggestion(value: string, evt: KeyboardEvent | MouseEvent): void {
+  public override selectSuggestion(value: string, $event: KeyboardEvent | MouseEvent): void {
     this.close();
     if (this.editor && this.cursor) {
-      this.editor.replaceRange(`Transformed ${value} ${evt.type}`, this.cursor);
+      this.editor.replaceRange(`Transformed ${value} ${$event.type}`, this.cursor);
     }
   }
 }

@@ -97,7 +97,7 @@ import { selectItem as mockSelectItem } from 'obsidian-dev-utils/obsidian/modals
 import { SamplePluginExtendedComponent } from './sample-plugin-extended-component.ts';
 
 interface CheckCommand extends Command {
-  checkCallback(checking: boolean): boolean;
+  checkCallback(isChecking: boolean): boolean;
 }
 
 interface EditorCommand extends Command {
@@ -126,7 +126,7 @@ interface SeedableComponent {
 }
 
 interface SelectItemParams {
-  itemTextFunc?(item: string): string;
+  itemTextFunction?(item: string): string;
 }
 
 const manifest: PluginManifest = {
@@ -203,7 +203,7 @@ beforeEach(() => {
 });
 
 function getCommand(id: string): Command {
-  const command = addCommandSpy.mock.calls.map((call) => call[0]).find((cmd) => cmd.id === id);
+  const command = addCommandSpy.mock.calls.map((call) => call[0]).find((command_) => command_.id === id);
   if (!command) {
     throw new Error(`Command ${id} not registered`);
   }
@@ -289,6 +289,7 @@ describe('SamplePluginExtendedComponent', () => {
       component.onload();
       expect(registerHoverLinkSourceSpy).toHaveBeenCalledWith({
         id: SAMPLE_VIEW_TYPE,
+        // eslint-disable-next-line unicorn/name-replacements -- `defaultMod` is an Obsidian `registerHoverLinkSource` info member name.
         info: { defaultMod: true, display: manifest.name }
       });
     });
@@ -350,16 +351,16 @@ describe('SamplePluginExtendedComponent', () => {
     it('should return false for sample-with-check command when no MarkdownView', () => {
       component.onload();
       appMock.workspace.getActiveViewOfType = (): null => null;
-      const result = (getCommand('sample-with-check') as CheckCommand).checkCallback(true);
-      expect(result).toBe(false);
+      const isResult = (getCommand('sample-with-check') as CheckCommand).checkCallback(true);
+      expect(isResult).toBe(false);
     });
 
     it('should return true for sample-with-check command when MarkdownView exists', () => {
       component.onload();
       const markdownView = strictProxy<MarkdownView>({});
       appMock.workspace.getActiveViewOfType = (() => markdownView) as typeof appMock.workspace.getActiveViewOfType;
-      const result = (getCommand('sample-with-check') as CheckCommand).checkCallback(true);
-      expect(result).toBe(true);
+      const isResult = (getCommand('sample-with-check') as CheckCommand).checkCallback(true);
+      expect(isResult).toBe(true);
     });
 
     it('should show notice for sample-with-check command when checking is false', () => {
@@ -379,19 +380,19 @@ describe('SamplePluginExtendedComponent', () => {
 
     it('should show notice on dblclick DOM event with element target', () => {
       component.onload();
-      const domCallback = domEventSpy.mock.calls[0]?.[2] as ((evt: MouseEvent) => void) | undefined;
+      const domCallback = domEventSpy.mock.calls[0]?.[2] as (($event: MouseEvent) => void) | undefined;
       const el = activeWindow.createDiv();
-      const evt = new MouseEvent('dblclick', { bubbles: true });
-      Object.defineProperty(evt, 'target', { value: el });
-      domCallback?.(evt);
+      const $event = new MouseEvent('dblclick', { bubbles: true });
+      Object.defineProperty($event, 'target', { value: el });
+      domCallback?.($event);
       expect(showNoticeMock).toHaveBeenCalledWith('Sample DOM event: DIV');
     });
 
     it('should show notice on dblclick DOM event with non-element target', () => {
       component.onload();
-      const domCallback = domEventSpy.mock.calls[0]?.[2] as ((evt: MouseEvent) => void) | undefined;
-      const evt = new MouseEvent('dblclick');
-      domCallback?.(evt);
+      const domCallback = domEventSpy.mock.calls[0]?.[2] as (($event: MouseEvent) => void) | undefined;
+      const $event = new MouseEvent('dblclick');
+      domCallback?.($event);
       expect(showNoticeMock).toHaveBeenCalledWith('Sample DOM event: ');
     });
 
@@ -526,11 +527,11 @@ describe('SamplePluginExtendedComponent', () => {
       );
     });
 
-    it('should have itemTextFunc that returns item in selectItem', async () => {
+    it('should have itemTextFunction that returns item in selectItem', async () => {
       component.onload();
       await getCommand('show-select-item-modal').callback?.();
       const params = vi.mocked(mockSelectItem).mock.calls.at(-1)?.[0] as SelectItemParams | undefined;
-      expect(params?.itemTextFunc?.('Item 1')).toBe('Item 1');
+      expect(params?.itemTextFunction?.('Item 1')).toBe('Item 1');
     });
 
     it('should show confirm result notice when show-confirm-modal command runs', async () => {

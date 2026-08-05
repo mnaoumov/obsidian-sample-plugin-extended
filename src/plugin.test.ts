@@ -1,6 +1,7 @@
 import type { PluginManifest } from 'obsidian';
 
 import { Component } from 'obsidian';
+import { castTo } from 'obsidian-dev-utils/object-utils';
 import { OpenDemoVaultCommandHandler } from 'obsidian-dev-utils/obsidian/command-handlers/open-demo-vault-command-handler';
 import { PluginNoticeComponent } from 'obsidian-dev-utils/obsidian/components/plugin-notice-component';
 import { PluginSettingsTabComponent } from 'obsidian-dev-utils/obsidian/components/plugin-settings-tab-component';
@@ -126,6 +127,14 @@ vi.mock('./sample-plugin-extended-component.ts', () => ({
 
 // eslint-disable-next-line import-x/first, import-x/imports-first -- vi.mock must precede imports.
 import { Plugin } from './plugin.ts';
+// The subset of `App` the dev-utils Notebook Navigator bridge reads on layout-ready.
+interface AppWithPlugins {
+  plugins: PluginRegistryLike;
+}
+
+interface PluginRegistryLike {
+  getPlugin(this: void, id: string): unknown;
+}
 
 describe('Plugin', () => {
   let app: App;
@@ -134,6 +143,9 @@ describe('Plugin', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     app = App.createConfigured__();
+    // Since obsidian-dev-utils 89.0.0 the base bridges its command handlers into Notebook Navigator's
+    // Menus, which looks the plugin up on layout-ready - so `plugins` has to answer on the strict mock.
+    castTo<AppWithPlugins>(app).plugins = { getPlugin: vi.fn().mockReturnValue(null) };
     const appOriginal = app.asOriginalType__();
 
     // Fire layout-ready synchronously so the real lifecycle completes within the test.
@@ -167,9 +179,11 @@ describe('Plugin', () => {
     const plugin = new Plugin(app.asOriginalType__(), manifest);
     await plugin.onload();
 
-    expect(registerCommandHandlers).toHaveBeenCalledWith(
-      expect.arrayContaining([expect.any(OpenDemoVaultCommandHandler)])
-    );
+    // Since obsidian-dev-utils 89.0.0 the handlers are built lazily by a factory, and the base registers
+    // Its own batch through the same spy - so build every batch and look across them.
+    const commandHandlers = registerCommandHandlers.mock.calls
+      .flatMap(([commandHandlerFactory]) => castTo<() => unknown[]>(commandHandlerFactory)());
+    expect(commandHandlers).toEqual(expect.arrayContaining([expect.any(OpenDemoVaultCommandHandler)]));
   });
 
   it('should show a notice on unload', async () => {

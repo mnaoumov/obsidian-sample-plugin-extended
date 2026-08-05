@@ -11,8 +11,8 @@ export class TypedItem {
   public constructor(public readonly name: string) {}
 
   public static deserialize(name: string): TypedItem {
-    const items = [TypedItem.Bar, TypedItem.Baz, TypedItem.Foo];
-    const item = items.find((i) => i.name === name);
+    const items = [this.Bar, this.Baz, this.Foo];
+    const item = items.find((index) => index.name === name);
 
     if (item === undefined) {
       throw new Error(`Unknown item: ${name}`);

@@ -138,6 +138,7 @@ export class SamplePluginExtendedComponent extends LayoutReadyComponent {
     this.hoverLinkSourceRegistrar.registerHoverLinkSource({
       id: SAMPLE_VIEW_TYPE,
       info: {
+        // eslint-disable-next-line unicorn/name-replacements -- `defaultMod` is an Obsidian `registerHoverLinkSource` info member name.
         defaultMod: true,
         display: this.pluginName
       }
@@ -189,13 +190,13 @@ export class SamplePluginExtendedComponent extends LayoutReadyComponent {
     await this.openView(SAMPLE_REACT_VIEW_TYPE);
   }
 
-  private handleSampleCodeBlockProcessor(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext): void {
-    getDebugger('handleSampleCodeBlockProcessor')(source, el, ctx);
+  private handleSampleCodeBlockProcessor(source: string, el: HTMLElement, context: MarkdownPostProcessorContext): void {
+    getDebugger('handleSampleCodeBlockProcessor')(source, el, context);
     el.setText('Sample code block processor');
   }
 
-  private handleSampleDomEvent(evt: MouseEvent): void {
-    const tagName = evt.target instanceof HTMLElement ? evt.target.tagName : '';
+  private handleSampleDomEvent($event: MouseEvent): void {
+    const tagName = $event.target instanceof HTMLElement ? $event.target.tagName : '';
     this.pluginNoticeComponent.showNotice(`Sample DOM event: ${tagName}`);
   }
 
@@ -211,8 +212,8 @@ export class SamplePluginExtendedComponent extends LayoutReadyComponent {
     this.pluginNoticeComponent.showNotice('Sample interval tick');
   }
 
-  private handleSampleMarkdownPostProcessor(el: HTMLElement, ctx: MarkdownPostProcessorContext): void {
-    getDebugger('handleSampleMarkdownPostProcessor')(el, ctx);
+  private handleSampleMarkdownPostProcessor(el: HTMLElement, context: MarkdownPostProcessorContext): void {
+    getDebugger('handleSampleMarkdownPostProcessor')(el, context);
     if (el.hasClass('el-h6')) {
       el.setText('Sample markdown post processor');
     }
@@ -262,13 +263,13 @@ export class SamplePluginExtendedComponent extends LayoutReadyComponent {
     this.pluginNoticeComponent.showNotice('Sample command');
   }
 
-  private runSampleCommandWithCheck(checking: boolean): boolean {
+  private runSampleCommandWithCheck(isChecking: boolean): boolean {
     const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
     if (!markdownView) {
       return false;
     }
 
-    if (!checking) {
+    if (!isChecking) {
       this.pluginNoticeComponent.showNotice('Sample command with check');
     }
 
@@ -292,13 +293,13 @@ export class SamplePluginExtendedComponent extends LayoutReadyComponent {
   }
 
   private async showConfirm(): Promise<void> {
-    const result = await confirm({
+    const isResult = await confirm({
       app: this.app,
       message: 'Sample confirm message',
       title: 'Sample confirm title'
     });
 
-    this.pluginNoticeComponent.showNotice(`Sample confirm result: ${String(result)}`);
+    this.pluginNoticeComponent.showNotice(`Sample confirm result: ${String(isResult)}`);
   }
 
   private async showPrompt(): Promise<void> {
@@ -324,7 +325,7 @@ export class SamplePluginExtendedComponent extends LayoutReadyComponent {
     await selectItem({
       app: this.app,
       items: ['Item 1', 'Item 2', 'Item 3'],
-      itemTextFunc: (item) => item,
+      itemTextFunction: (item) => item,
       placeholder: 'Sample select item placeholder'
     });
   }
