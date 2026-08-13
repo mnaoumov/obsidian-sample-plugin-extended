@@ -48,13 +48,9 @@ vi.mock('obsidian-dev-utils/obsidian/active-file-provider', () => ({
   AppActiveFileProvider: vi.fn()
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/data-handler', () => ({
-  PluginDataHandler: vi.fn()
-}));
-
-vi.mock('obsidian-dev-utils/obsidian/plugin/plugin-event-source', () => ({
-  PluginEventSourceImpl: vi.fn()
-}));
+// `PluginDataHandler` and `PluginEventSourceImpl` are NOT stubbed: since obsidian-dev-utils 93.2 the base
+// Builds its own settings component out of them during `onload`, and that component really calls
+// `pluginEventSource.on`, so a bare `vi.fn()` double makes the base throw before `onloadImpl` runs (G49).
 
 vi.mock('obsidian-dev-utils/obsidian/command-registrar', () => ({
   PluginCommandRegistrar: vi.fn()

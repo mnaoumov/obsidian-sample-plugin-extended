@@ -1,5 +1,3 @@
-[Docs](https://github.com/mnaoumov/obsidian-sample-plugin-extended/)
-
 # Views
 
 Sample Plugin Extended registers three custom side views, each built with a different UI approach, to show how a plugin can render its own panes.

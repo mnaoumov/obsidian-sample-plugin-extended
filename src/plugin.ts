@@ -33,6 +33,7 @@ export class Plugin extends PluginBase {
         pluginNoticeComponent: this.pluginNoticeComponent
       })
     );
+    this.pluginSettingsComponent = pluginSettingsComponent;
     this.addChild(
       new PluginSettingsTabComponent({
         plugin: this,

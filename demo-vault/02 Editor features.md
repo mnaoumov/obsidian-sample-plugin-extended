@@ -1,5 +1,3 @@
-[Docs](https://github.com/mnaoumov/obsidian-sample-plugin-extended/)
-
 # Editor features
 
 Beyond commands, the plugin extends the editor and the Markdown renderer. Try these in this note (switch between editing and reading views where noted).
