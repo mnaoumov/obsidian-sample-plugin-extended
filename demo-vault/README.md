@@ -1,3 +1,5 @@
+# Sample Plugin Extended demo vault
+
 This is an [Obsidian](https://obsidian.md/) vault demonstrating features of the [Sample Plugin Extended](https://github.com/mnaoumov/obsidian-sample-plugin-extended) plugin.
 
 ## Opening this vault

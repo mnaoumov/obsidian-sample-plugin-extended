@@ -1,5 +1,3 @@
-[Docs](https://github.com/mnaoumov/obsidian-sample-plugin-extended/)
-
 # Commands and modals
 
 Sample Plugin Extended registers a handful of sample commands, a ribbon icon, and a status bar item. Each one shows a **notice** so you can see it fired.
