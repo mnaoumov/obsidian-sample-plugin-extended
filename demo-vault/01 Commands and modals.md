@@ -22,6 +22,24 @@ Open the Command Palette (`Ctrl/Cmd + P`) and run any of these:
 
 Double-click anywhere in the app. The plugin listens for the DOM `dblclick` event and shows a `Sample DOM event: ...` notice naming the element you clicked.
 
+Each of those is one press from here. Watch the top-right corner for the notice:
+
+```code-button
+---
+caption: Sample
+---
+require('/demoSetup.ts').runCommand(app, 'sample');
+```
+
+```code-button
+---
+caption: Sample with check
+---
+require('/demoSetup.ts').runCommand(app, 'sample-with-check');
+```
+
+Manual equivalent: run the Command Palette entry of the same name. **Sample editor** is deliberately not a button - it inserts text at the cursor, so it needs a note open in editing mode and a cursor placed in it, which is the condition it exists to demonstrate.
+
 ## Modals
 
 These commands open the modal helpers shipped by `obsidian-dev-utils`:
@@ -36,3 +54,40 @@ These commands open the modal helpers shipped by `obsidian-dev-utils`:
   - a text prompt that validates its input (it requires at least 30 characters).
 - **Show select item modal**
   - a fuzzy picker over `Item 1`, `Item 2`, `Item 3`.
+
+```code-button
+---
+caption: Show sample modal
+---
+require('/demoSetup.ts').runCommand(app, 'show-sample-modal');
+```
+
+```code-button
+---
+caption: Show alert modal
+---
+require('/demoSetup.ts').runCommand(app, 'show-alert-modal');
+```
+
+```code-button
+---
+caption: Show confirm modal
+---
+require('/demoSetup.ts').runCommand(app, 'show-confirm-modal');
+```
+
+```code-button
+---
+caption: Show prompt modal
+---
+require('/demoSetup.ts').runCommand(app, 'show-prompt-modal');
+```
+
+```code-button
+---
+caption: Show select item modal
+---
+require('/demoSetup.ts').runCommand(app, 'show-select-item-modal');
+```
+
+Manual equivalent for all five: the Command Palette entries of the same names.
