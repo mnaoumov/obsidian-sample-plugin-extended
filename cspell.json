@@ -18,7 +18,9 @@
     "offref",
     "reimplementation",
     "Seedable",
-    "tsbuildinfo"
+    "tsbuildinfo",
+    "unvalidated",
+    "wdio"
   ],
   "ignoreWords": [],
   "import": [],
