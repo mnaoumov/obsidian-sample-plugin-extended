@@ -4,11 +4,7 @@ Welcome to the [Sample Plugin Extended](https://github.com/mnaoumov/obsidian-sam
 
 **How to try it:** open a feature note below and follow its steps. Most features surface as **notices** (the toasts in the top-right corner), so keep an eye there after you run a command or click the ribbon icon.
 
-Every sample command a note names is also a button in that note, so you can fire it without leaving the
-page - and since this plugin is the template others are scaffolded from, that is the convention it
-should model. The few features that genuinely need the Obsidian UI - the ribbon icon, the status bar,
-the double-click listener, the editor command that inserts at your cursor - stay as steps to follow,
-and say why.
+Every sample command a note names is also a button in that note, so you can fire it without leaving the page - and since this plugin is the template others are scaffolded from, that is the convention it should model. The few features that genuinely need the Obsidian UI - the ribbon icon, the status bar, the double-click listener, the editor command that inserts at your cursor - stay as steps to follow, and say why.
 
 ## Feature
 
