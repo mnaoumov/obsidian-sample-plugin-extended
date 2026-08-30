@@ -1,32 +1,29 @@
+import { existsSync } from 'node:fs';
 import process from 'node:process';
 import { wrapCliTask } from 'obsidian-dev-utils/script-utils/cli-utils';
-import { readJson } from 'obsidian-dev-utils/script-utils/json';
 import {
   parseVersionArguments,
   updateVersion
 } from 'obsidian-dev-utils/script-utils/version';
 
 /*
- * This repo is a template. Releasing the template itself is disabled, but the guard below is keyed to the
- * template's own plugin id: the moment you fork this repo and set your own id in manifest.json it becomes
- * inert, so clones release normally (you can also just delete this guard).
+ * This repo is the template that plugins are scaffolded from, and it must not release itself.
+ * The guard below is keyed to a marker FILE, deliberately not to the template's own plugin id.
+ * Scaffolding renames that id globally, which would re-target an id-keyed guard at the new plugin.
+ * A file's existence survives any text rename, so the trap cannot be reproduced.
+ * Delete `.template` in your own copy to enable releases.
  */
-const TEMPLATE_PLUGIN_ID = 'sample-plugin-extended';
+const TEMPLATE_MARKER_FILE = '.template';
 
-interface Manifest {
-  id: string;
-}
-
-await wrapCliTask(async () => {
-  const manifest = await readJson<Manifest>('manifest.json');
-  if (manifest.id === TEMPLATE_PLUGIN_ID) {
+await wrapCliTask(() => {
+  if (existsSync(TEMPLATE_MARKER_FILE)) {
     throw new Error(
-      `Releasing is disabled for the template repo (plugin id "${TEMPLATE_PLUGIN_ID}"). `
-        + 'Set your own id in manifest.json to enable releases, or remove this guard in scripts/version.ts.'
+      `Releasing is disabled while the ${TEMPLATE_MARKER_FILE} marker file exists. `
+        + `Delete ${TEMPLATE_MARKER_FILE} to enable releases for your plugin.`
     );
   }
 
   const [, , ...$arguments] = process.argv;
   const { options, versionUpdateType } = parseVersionArguments($arguments);
-  await updateVersion(versionUpdateType, options);
+  return updateVersion(versionUpdateType, options);
 });

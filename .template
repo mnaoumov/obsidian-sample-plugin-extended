@@ -1,0 +1,9 @@
+This repository is the obsidian-sample-plugin-extended template.
+
+While this file exists, `npm run version` refuses to run, so the template cannot
+release itself. Delete this file in your own copy to enable releases.
+
+The guard is keyed to this file rather than to a plugin id on purpose: scaffolding
+a new plugin renames the template's id everywhere, which would re-target an
+id-keyed guard at the new plugin and block its releases instead. A file's
+existence survives any text rename.
