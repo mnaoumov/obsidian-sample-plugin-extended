@@ -41,6 +41,8 @@ Use `GitHub`'s `Use this template` button to create your own copy of this reposi
 
 Don't forget to text search for all `Sample` words and replace them accordingly.
 
+Then delete the `.template` marker file from the repository root. While it exists, `npm run version` refuses to run, which is what stops the template from releasing itself.
+
 ## Debugging
 
 By default, debug messages for this plugin are hidden.
