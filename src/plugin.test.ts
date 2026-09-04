@@ -123,14 +123,6 @@ vi.mock('./sample-plugin-extended-component.ts', () => ({
 
 // eslint-disable-next-line import-x/first, import-x/imports-first -- vi.mock must precede imports.
 import { Plugin } from './plugin.ts';
-// The subset of `App` the dev-utils Notebook Navigator bridge reads on layout-ready.
-interface AppWithPlugins {
-  plugins: PluginRegistryLike;
-}
-
-interface PluginRegistryLike {
-  getPlugin(this: void, id: string): unknown;
-}
 
 describe('Plugin', () => {
   let app: App;
@@ -139,9 +131,6 @@ describe('Plugin', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     app = App.createConfigured__();
-    // Since obsidian-dev-utils 89.0.0 the base bridges its command handlers into Notebook Navigator's
-    // Menus, which looks the plugin up on layout-ready - so `plugins` has to answer on the strict mock.
-    castTo<AppWithPlugins>(app).plugins = { getPlugin: vi.fn().mockReturnValue(null) };
     const appOriginal = app.asOriginalType__();
 
     // Fire layout-ready synchronously so the real lifecycle completes within the test.
