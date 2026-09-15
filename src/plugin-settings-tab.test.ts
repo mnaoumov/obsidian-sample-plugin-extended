@@ -50,9 +50,9 @@ describe('PluginSettingsTab', () => {
     app = App.createConfigured__().asOriginalType__();
 
     // `PluginSettingsTabBase.bind` duck-types components via a strict-proxy property probe
-    // That the real test-mocks components throw on, so neutralize only `bind`'s return value
-    // While keeping the real base + real `SettingEx` + real rendered components. The stub also
-    // Drives the source-provided option callbacks (converters / onChanged) the way the real
+    // that the real test-mocks components throw on, so neutralize only `bind`'s return value
+    // while keeping the real base + real `SettingEx` + real rendered components. The stub also
+    // drives the source-provided option callbacks (converters / onChanged) the way the real
     // `bind` would, so those closures stay exercised.
     bindSpy = vi.spyOn(PluginSettingsTabBase.prototype, 'bind').mockImplementation((params) => {
       const paramsExtension = castTo<BindOptionsExtension>(params);
