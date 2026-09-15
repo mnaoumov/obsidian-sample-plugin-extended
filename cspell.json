@@ -12,6 +12,7 @@
     "asar",
     "dblclick",
     "GHSA",
+    "hrqm",
     "Invocables",
     "lezer",
     "Naumov",
@@ -19,6 +20,7 @@
     "offref",
     "reimplementation",
     "Seedable",
+    "smol",
     "tsbuildinfo",
     "unvalidated",
     "wdio"
