@@ -6,8 +6,8 @@ import {
 } from 'vitest';
 
 // The Svelte single-file component cannot be parsed by Vite's import analysis in
-// This unit-test context, so stub the asset import. This is a non-dev-utils asset
-// Mock, not a mock of any test-mocks / dev-utils behavior.
+// this unit-test context, so stub the asset import. This is a non-dev-utils asset
+// mock, not a mock of any test-mocks / dev-utils behavior.
 vi.mock('./svelte-components/sample-svelte-component.svelte', () => ({
   default: vi.fn()
 }));

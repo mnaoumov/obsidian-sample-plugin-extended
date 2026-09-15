@@ -118,8 +118,8 @@ interface PromptParams {
 
 // These registration methods are Obsidian `Component` methods that the test-mocks
 // `Component` either does not record (`registerDomEvent`, `registerInterval`) or whose
-// Callback we need to capture, so they are seeded with a `vi.fn` before `onload()` to
-// Capture the really-registered callbacks.
+// callback we need to capture, so they are seeded with a `vi.fn` before `onload()` to
+// capture the really-registered callbacks.
 interface SeedableComponent {
   registerDomEvent: ReturnType<typeof vi.fn>;
   registerInterval: ReturnType<typeof vi.fn>;
@@ -193,7 +193,7 @@ beforeEach(() => {
   });
 
   // `registerDomEvent` / `registerInterval` are Obsidian `Component` methods. Seeding them
-  // With a `vi.fn` captures the really-registered callbacks so they can be invoked later.
+  // with a `vi.fn` captures the really-registered callbacks so they can be invoked later.
   domEventSpy = vi.fn();
   intervalSpy = vi.fn((id: number) => id);
 
