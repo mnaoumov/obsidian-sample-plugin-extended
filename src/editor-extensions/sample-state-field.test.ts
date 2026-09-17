@@ -13,7 +13,7 @@ interface MockExtension {
 }
 
 interface MockIterateParams {
-  enter(node: MockNode): void;
+  readonly enter: (node: MockNode) => void;
 }
 
 interface MockNode {
@@ -32,9 +32,9 @@ interface MockSpecCapture {
 type MockState = object;
 
 interface MockStateFieldSpec {
-  create(): unknown;
-  provide(field: unknown): unknown;
-  update(oldState: unknown, transaction: MockTransaction): unknown;
+  create: () => unknown;
+  provide: (field: unknown) => unknown;
+  update: (oldState: unknown, transaction: MockTransaction) => unknown;
 }
 
 interface MockTransaction {
@@ -42,7 +42,7 @@ interface MockTransaction {
 }
 
 interface MockTree {
-  iterate(params: MockIterateParams): void;
+  iterate: (params: MockIterateParams) => void;
 }
 
 const mockExtension: MockExtension = { _type: 'extension' };

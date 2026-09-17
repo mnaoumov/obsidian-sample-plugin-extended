@@ -97,23 +97,23 @@ import { selectItem as mockSelectItem } from 'obsidian-dev-utils/obsidian/modals
 import { SamplePluginExtendedComponent } from './sample-plugin-extended-component.ts';
 
 interface CheckCommand extends Command {
-  checkCallback(isChecking: boolean): boolean;
+  checkCallback: (isChecking: boolean) => boolean;
 }
 
 interface EditorCommand extends Command {
-  editorCallback(editor: EditorForCommand): void;
+  editorCallback: (editor: EditorForCommand) => void;
 }
 
 interface EditorForCommand {
-  replaceSelection(text: string): void;
+  replaceSelection: (text: string) => void;
 }
 
 interface LayoutReadyComponentInternals {
-  onLayoutReady(): Promise<void>;
+  onLayoutReady: () => Promise<void>;
 }
 
 interface PromptParams {
-  valueValidator?(value: string): string | undefined;
+  readonly valueValidator?: (value: string) => string | undefined;
 }
 
 // These registration methods are Obsidian `Component` methods that the test-mocks
@@ -126,7 +126,7 @@ interface SeedableComponent {
 }
 
 interface SelectItemParams {
-  itemTextFunction?(item: string): string;
+  readonly itemTextFunction?: (item: string) => string;
 }
 
 const manifest: PluginManifest = {

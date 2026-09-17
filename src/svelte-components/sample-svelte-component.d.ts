@@ -1,5 +1,5 @@
 export interface SampleSvelteComponentExports {
-  increment(): void;
+  increment: () => void;
 }
 
 export interface SampleSvelteComponentProps {
