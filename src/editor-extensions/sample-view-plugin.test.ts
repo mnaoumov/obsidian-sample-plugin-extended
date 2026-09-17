@@ -7,12 +7,12 @@ import {
 } from 'vitest';
 
 interface MockBuilder {
-  add(from: number, to: number, decoration: unknown): void;
-  finish(): MockDecorationSet;
+  add: (from: number, to: number, decoration: unknown) => void;
+  finish: () => MockDecorationSet;
 }
 
 interface MockDecoration {
-  range(from: number, to: number): unknown;
+  range: (from: number, to: number) => unknown;
 }
 
 interface MockDecorationSet {
@@ -25,7 +25,7 @@ interface MockEditorView {
 }
 
 interface MockIterateParams {
-  enter(node: MockNode): void;
+  readonly enter: (node: MockNode) => void;
 }
 
 interface MockNode {
@@ -43,11 +43,11 @@ interface MockPluginCapture {
 }
 
 interface MockPluginInstance {
-  update(u: MockViewUpdate): void;
+  update: (u: MockViewUpdate) => void;
 }
 
 interface MockPluginSpec {
-  decorations(value: MockPluginWithDecorations): string;
+  decorations: (value: MockPluginWithDecorations) => string;
 }
 
 interface MockPluginWithDecorations {
@@ -61,7 +61,7 @@ interface MockSpecCapture {
 type MockState = object;
 
 interface MockTree {
-  iterate(params: MockIterateParams): void;
+  iterate: (params: MockIterateParams) => void;
 }
 
 interface MockViewUpdate {

@@ -31,9 +31,9 @@ import type { PluginSettings } from './plugin-settings.ts';
 import { PluginSettingsTab } from './plugin-settings-tab.ts';
 
 interface BindOptionsExtension {
-  componentToPluginSettingsValueConverter?(uiValue: string): unknown;
-  onChanged?(newValue: unknown, oldValue: unknown): void;
-  pluginSettingsToComponentValueConverter?(pluginSettingsValue: string): unknown;
+  componentToPluginSettingsValueConverter?: (uiValue: string) => unknown;
+  onChanged?: (newValue: unknown, oldValue: unknown) => void;
+  pluginSettingsToComponentValueConverter?: (pluginSettingsValue: string) => unknown;
 }
 
 describe('PluginSettingsTab', () => {

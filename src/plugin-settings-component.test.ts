@@ -20,17 +20,17 @@ import {
 } from './plugin-settings.ts';
 
 interface ProtectedBase {
-  onLoadRecord(record: unknown): Promise<void>;
-  onLoadSettings(loadedState: unknown, isInitialLoad: boolean): Promise<void>;
-  onSaveSettings(params: unknown): Promise<void>;
-  onSavingRecord(record: unknown): Promise<void>;
-  registerValidator(key: string, validator: unknown): void;
-  registerValidators(): void;
+  onLoadRecord: (record: unknown) => Promise<void>;
+  onLoadSettings: (loadedState: unknown, isInitialLoad: boolean) => Promise<void>;
+  onSaveSettings: (params: unknown) => Promise<void>;
+  onSavingRecord: (record: unknown) => Promise<void>;
+  registerValidator: (key: string, validator: unknown) => void;
+  registerValidators: () => void;
 }
 
 interface RegisteredValidator {
   key: string;
-  validator(value: string): string | undefined;
+  validator: (value: string) => string | undefined;
 }
 
 const protectedBasePrototype = castTo<ProtectedBase>(PluginSettingsComponentBase.prototype);
