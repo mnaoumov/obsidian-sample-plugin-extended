@@ -12,13 +12,15 @@
     "brace-expansion-upstream - the alias that installs the patched brace-expansion 5.x. Its only consumer is patches/brace-expansion-callable/index.js, which depcheck does not scan as project source. See pinned-versions.json's brace-expansion entry.",
     "czg - run as a CLI by scripts/commit.ts.",
     "husky - installed by scripts/prepare.ts; the hooks in .husky/ are its output.",
-    "nano-staged - .husky/pre-commit runs it; configured by scripts/nano-staged-config.ts."
+    "nano-staged - .husky/pre-commit runs it; configured by scripts/nano-staged-config.ts.",
+    "svelte-check - run as a CLI by obsidian-dev-utils' buildCompileSvelte(), which `npm run build:compile` reaches through scripts/build-compile.ts. That function globs the project's *.svelte files, and on finding src/svelte-components/sample-svelte-component.svelte it REQUIRES the declaration below: it reads this package.json and throws \"Found Svelte file(s) in the project ..., but `svelte-check` is not declared in package.json\" instead of running `node_modules/.bin/svelte-check --tsconfig tsconfig.json`. So the declaration is load-bearing rather than merely a type-check - dropping it fails `npm run build` outright, which is why this is an ignore and not a removal. obsidian-dev-utils declares svelte-check itself and so supplies the binary either way, which is why no file here imports it; it reads the declaration from package.json rather than probing node_modules/.bin because its resolveToolCommand falls back to the package manager's exec form under yarn PnP."
   ],
   "ignores": [
     "better-typescript-lib",
     "brace-expansion-upstream",
     "czg",
     "husky",
-    "nano-staged"
+    "nano-staged",
+    "svelte-check"
   ]
 }
