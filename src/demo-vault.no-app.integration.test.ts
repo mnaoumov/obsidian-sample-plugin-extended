@@ -5,7 +5,7 @@ import { getRootFolder } from 'obsidian-dev-utils/script-utils/root';
 // Keeps the in-repo `demo-vault/` in sync with the plugin's public surface WITHOUT
 // launching Obsidian: it reflects the real config from source and asserts every
 // setting is documented in a note, and that the guard note/member still exist
-// (rename drift). Sample Plugin Extended's runtime features (commands, ribbon,
+// (rename drift). `Sample Plugin Extended`'s runtime features (commands, ribbon,
 // status bar, modals, editor extensions, and views) are demonstrated in the notes;
 // Only the PluginSettings config class is reflected here.
 registerDemoVaultCoverageSuite({
