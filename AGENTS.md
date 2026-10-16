@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Sample Plugin Extended is a showcase/template plugin demonstrating the `obsidian-dev-utils`-based plugin setup, including a sample Svelte UI component.
+`Sample Plugin Extended` is a showcase/template plugin demonstrating the `obsidian-dev-utils`-based plugin setup, including a sample Svelte UI component.
 
 ## Deviations from the standard plugin architecture
 

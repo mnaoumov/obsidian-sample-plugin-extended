@@ -1,6 +1,6 @@
 # Settings
 
-Open **Settings -> Community plugins -> Sample Plugin Extended** to see the settings tab. It exists to demonstrate every setting component that `obsidian-dev-utils` provides via `SettingEx`, so it is deliberately exhaustive. Each option below lists the setting key stored in the plugin's `data.json`.
+Open **Settings -> Community plugins -> `Sample Plugin Extended`** to see the settings tab. It exists to demonstrate every setting component that `obsidian-dev-utils` provides via `SettingEx`, so it is deliberately exhaustive. Each option below lists the setting key stored in the plugin's `data.json`.
 
 The tab also shows a few **action-only** rows with no stored value - a button, an extra button, a file picker, and a multiple-file picker - which just fire a notice when used.
 
