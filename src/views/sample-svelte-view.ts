@@ -1,5 +1,5 @@
+import { noopAsync } from '@mnaoumov/typescript-lib/function';
 import { ItemView } from 'obsidian';
-import { noopAsync } from 'obsidian-dev-utils/function';
 import {
   mount,
   unmount

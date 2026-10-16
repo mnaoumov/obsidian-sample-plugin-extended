@@ -1,5 +1,5 @@
+import { noopAsync } from '@mnaoumov/typescript-lib/function';
 import { ItemView } from 'obsidian';
-import { noopAsync } from 'obsidian-dev-utils/function';
 
 export const SAMPLE_VIEW_TYPE = 'SamplePluginExtended-SampleView';
 

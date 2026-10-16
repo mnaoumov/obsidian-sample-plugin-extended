@@ -1,10 +1,10 @@
 import type { PluginManifest } from 'obsidian';
 
+import { OpenDemoVaultCommandHandler } from '@mnaoumov/obsidian-lib/command-handlers/open-demo-vault-command-handler';
+import { PluginNoticeComponent } from '@mnaoumov/obsidian-lib/components/plugin-notice-component';
+import { PluginSettingsTabComponent } from '@mnaoumov/obsidian-lib/components/plugin-settings-tab-component';
+import { castTo } from '@mnaoumov/typescript-lib/object-utils';
 import { Component } from 'obsidian';
-import { castTo } from 'obsidian-dev-utils/object-utils';
-import { OpenDemoVaultCommandHandler } from 'obsidian-dev-utils/obsidian/command-handlers/open-demo-vault-command-handler';
-import { PluginNoticeComponent } from 'obsidian-dev-utils/obsidian/components/plugin-notice-component';
-import { PluginSettingsTabComponent } from 'obsidian-dev-utils/obsidian/components/plugin-settings-tab-component';
 import { App } from 'obsidian-test-mocks/obsidian';
 import {
   beforeEach,
@@ -19,7 +19,7 @@ import { PluginSettingsTab } from './plugin-settings-tab.ts';
 import { SamplePluginExtendedComponent } from './sample-plugin-extended-component.ts';
 
 /*
- * The real `PluginBase` (from `obsidian-dev-utils`) drives the lifecycle here —
+ * The real `PluginBase` (from `@mnaoumov/obsidian-lib`) drives the lifecycle here —
  * it is NOT mocked. `await plugin.onload()` registers the base's universal
  * components, runs the plugin's `onloadImpl`, then loads every queued child via
  * the real children-first lifecycle. Each child the plugin adds must therefore
@@ -30,21 +30,21 @@ import { SamplePluginExtendedComponent } from './sample-plugin-extended-componen
 // The shared command handler component is now constructed and registered by PluginBase itself, so the mock exposes the registerCommandHandlers spy the base calls at load.
 const { registerCommandHandlers } = vi.hoisted(() => ({ registerCommandHandlers: vi.fn() }));
 
-vi.mock('obsidian-dev-utils/obsidian/command-handlers/command-handler-component', () => ({
+vi.mock('@mnaoumov/obsidian-lib/command-handlers/command-handler-component', () => ({
   // eslint-disable-next-line prefer-arrow-callback, func-names -- mock must be constructable with `new` and return a loadable Component exposing registerCommandHandlers.
   CommandHandlerComponent: vi.fn(function (): Component {
     return Object.assign(new Component(), { registerCommandHandlers });
   })
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/components/menu-event-registrar-component', () => ({
+vi.mock('@mnaoumov/obsidian-lib/components/menu-event-registrar-component', () => ({
   // eslint-disable-next-line prefer-arrow-callback, func-names -- mock must be constructable with `new` and return a loadable Component.
   MenuEventRegistrarComponent: vi.fn(function (): Component {
     return new Component();
   })
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/active-file-provider', () => ({
+vi.mock('@mnaoumov/obsidian-lib/active-file-provider', () => ({
   AppActiveFileProvider: vi.fn()
 }));
 
@@ -52,51 +52,51 @@ vi.mock('obsidian-dev-utils/obsidian/active-file-provider', () => ({
 // builds its own settings component out of them during `onload`, and that component really calls
 // `pluginEventSource.on`, so a bare `vi.fn()` double makes the base throw before `onloadImpl` runs.
 
-vi.mock('obsidian-dev-utils/obsidian/command-registrar', () => ({
+vi.mock('@mnaoumov/obsidian-lib/command-registrar', () => ({
   PluginCommandRegistrar: vi.fn()
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/ribbon-icon-registrar', () => ({
+vi.mock('@mnaoumov/obsidian-lib/ribbon-icon-registrar', () => ({
   PluginRibbonIconRegistrar: vi.fn()
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/status-bar-item-registrar', () => ({
+vi.mock('@mnaoumov/obsidian-lib/status-bar-item-registrar', () => ({
   PluginStatusBarItemRegistrar: vi.fn()
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/editor-extension-registrar', () => ({
+vi.mock('@mnaoumov/obsidian-lib/editor-extension-registrar', () => ({
   PluginEditorExtensionRegistrar: vi.fn()
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/editor-suggest-registrar', () => ({
+vi.mock('@mnaoumov/obsidian-lib/editor-suggest-registrar', () => ({
   PluginEditorSuggestRegistrar: vi.fn()
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/extensions-registrar', () => ({
+vi.mock('@mnaoumov/obsidian-lib/extensions-registrar', () => ({
   PluginExtensionsRegistrar: vi.fn()
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/hover-link-source-registrar', () => ({
+vi.mock('@mnaoumov/obsidian-lib/hover-link-source-registrar', () => ({
   PluginHoverLinkSourceRegistrar: vi.fn()
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/markdown-code-block-processor-registrar', () => ({
+vi.mock('@mnaoumov/obsidian-lib/markdown-code-block-processor-registrar', () => ({
   PluginMarkdownCodeBlockProcessorRegistrar: vi.fn()
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/markdown-post-processor-registrar', () => ({
+vi.mock('@mnaoumov/obsidian-lib/markdown-post-processor-registrar', () => ({
   PluginMarkdownPostProcessorRegistrar: vi.fn()
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/obsidian-protocol-handler-registrar', () => ({
+vi.mock('@mnaoumov/obsidian-lib/obsidian-protocol-handler-registrar', () => ({
   PluginObsidianProtocolHandlerRegistrar: vi.fn()
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/view-registrar', () => ({
+vi.mock('@mnaoumov/obsidian-lib/view-registrar', () => ({
   PluginViewRegistrar: vi.fn()
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/components/plugin-settings-tab-component', () => ({
+vi.mock('@mnaoumov/obsidian-lib/components/plugin-settings-tab-component', () => ({
   // eslint-disable-next-line prefer-arrow-callback, func-names -- mock must be constructable with `new` and return a real loadable Component.
   PluginSettingsTabComponent: vi.fn(function () {
     return new Component();

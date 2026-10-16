@@ -1,4 +1,4 @@
-import { AppContext } from 'obsidian-dev-utils/obsidian/react/app-context';
+import { AppContext } from '@mnaoumov/obsidian-lib/react/app-context';
 import { App } from 'obsidian-test-mocks/obsidian';
 import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';

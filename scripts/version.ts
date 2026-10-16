@@ -1,10 +1,10 @@
-import { existsSync } from 'node:fs';
-import process from 'node:process';
-import { wrapCliTask } from 'obsidian-dev-utils/script-utils/cli-utils';
 import {
   parseVersionArguments,
   updateVersion
-} from 'obsidian-dev-utils/script-utils/version';
+} from '@mnaoumov/obsidian-dev-toolkit/version';
+import { wrapCliTask } from '@mnaoumov/typescript-dev-toolkit/cli-utils';
+import { existsSync } from 'node:fs';
+import process from 'node:process';
 
 /*
  * This repo is the template that plugins are scaffolded from, and it must not release itself.

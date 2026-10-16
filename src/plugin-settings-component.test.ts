@@ -1,11 +1,11 @@
-import type { PluginNoticeComponent } from 'obsidian-dev-utils/obsidian/components/plugin-notice-component';
-import type { PluginSettingsState } from 'obsidian-dev-utils/obsidian/components/plugin-settings-component';
-import type { DataHandler } from 'obsidian-dev-utils/obsidian/data-handler';
-import type { PluginEventSource } from 'obsidian-dev-utils/obsidian/plugin/plugin-event-source';
+import type { PluginNoticeComponent } from '@mnaoumov/obsidian-lib/components/plugin-notice-component';
+import type { PluginSettingsState } from '@mnaoumov/obsidian-lib/components/plugin-settings-component';
+import type { DataHandler } from '@mnaoumov/obsidian-lib/data-handler';
+import type { PluginEventSource } from '@mnaoumov/obsidian-lib/plugin/plugin-event-source';
 
-import { castTo } from 'obsidian-dev-utils/object-utils';
-import { PluginSettingsComponentBase } from 'obsidian-dev-utils/obsidian/components/plugin-settings-component';
-import { strictProxy } from 'obsidian-dev-utils/strict-proxy';
+import { PluginSettingsComponentBase } from '@mnaoumov/obsidian-lib/components/plugin-settings-component';
+import { castTo } from '@mnaoumov/typescript-lib/object-utils';
+import { strictProxy } from '@mnaoumov/typescript-test-toolkit/strict-proxy';
 import {
   describe,
   expect,

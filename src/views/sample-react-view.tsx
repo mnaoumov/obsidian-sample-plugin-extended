@@ -1,8 +1,8 @@
 import type { Root } from 'react-dom/client';
 
+import { AppContext } from '@mnaoumov/obsidian-lib/react/app-context';
+import { noopAsync } from '@mnaoumov/typescript-lib/function';
 import { ItemView } from 'obsidian';
-import { noopAsync } from 'obsidian-dev-utils/function';
-import { AppContext } from 'obsidian-dev-utils/obsidian/react/app-context';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 

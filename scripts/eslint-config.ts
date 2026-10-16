@@ -1,8 +1,8 @@
 import type { Linter } from 'eslint';
 
+import { defineEslintConfigs } from '@mnaoumov/obsidian-dev-toolkit/linters/eslint-config';
+import { ObsidianPluginRepoPaths } from '@mnaoumov/obsidian-dev-toolkit/obsidian-plugin-repo-paths';
 import { defineConfig } from 'eslint/config';
-import { ObsidianPluginRepoPaths } from 'obsidian-dev-utils/obsidian/plugin/obsidian-plugin-repo-paths';
-import { defineEslintConfigs } from 'obsidian-dev-utils/script-utils/linters/eslint-config';
 
 export const configs: Linter.Config[] = defineEslintConfigs({
   customConfigs() {
@@ -30,7 +30,7 @@ export const configs: Linter.Config[] = defineEslintConfigs({
            * is the point rather than an oversight. The other three manifest rules stay on, which is why
            * the checks are separate rules rather than one.
            */
-          'obsidian-dev-utils/manifest-name': 'off'
+          'obsidian-dev-toolkit/manifest-name': 'off'
         }
       }
     ]);
