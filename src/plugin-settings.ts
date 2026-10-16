@@ -1,5 +1,5 @@
-import type { IsoMonth } from 'obsidian-dev-utils/obsidian/setting-components/month-component';
-import type { IsoWeek } from 'obsidian-dev-utils/obsidian/setting-components/week-component';
+import type { IsoMonth } from '@mnaoumov/obsidian-lib/setting-components/month-component';
+import type { IsoWeek } from '@mnaoumov/obsidian-lib/setting-components/week-component';
 
 import { moment } from 'obsidian';
 

@@ -1,4 +1,16 @@
 import type { Extension } from '@codemirror/state';
+import type { CommandRegistrar } from '@mnaoumov/obsidian-lib/command-registrar';
+import type { PluginNoticeComponent } from '@mnaoumov/obsidian-lib/components/plugin-notice-component';
+import type { EditorExtensionRegistrar } from '@mnaoumov/obsidian-lib/editor-extension-registrar';
+import type { EditorSuggestRegistrar } from '@mnaoumov/obsidian-lib/editor-suggest-registrar';
+import type { ExtensionsRegistrar } from '@mnaoumov/obsidian-lib/extensions-registrar';
+import type { HoverLinkSourceRegistrar } from '@mnaoumov/obsidian-lib/hover-link-source-registrar';
+import type { MarkdownCodeBlockProcessorRegistrar } from '@mnaoumov/obsidian-lib/markdown-code-block-processor-registrar';
+import type { MarkdownPostProcessorRegistrar } from '@mnaoumov/obsidian-lib/markdown-post-processor-registrar';
+import type { ObsidianProtocolHandlerRegistrar } from '@mnaoumov/obsidian-lib/obsidian-protocol-handler-registrar';
+import type { RibbonIconRegistrar } from '@mnaoumov/obsidian-lib/ribbon-icon-registrar';
+import type { StatusBarItemRegistrar } from '@mnaoumov/obsidian-lib/status-bar-item-registrar';
+import type { ViewRegistrar } from '@mnaoumov/obsidian-lib/view-registrar';
 import type {
   Command,
   EditorSuggest,
@@ -8,22 +20,10 @@ import type {
   ObsidianProtocolData,
   PluginManifest
 } from 'obsidian';
-import type { CommandRegistrar } from 'obsidian-dev-utils/obsidian/command-registrar';
-import type { PluginNoticeComponent } from 'obsidian-dev-utils/obsidian/components/plugin-notice-component';
-import type { EditorExtensionRegistrar } from 'obsidian-dev-utils/obsidian/editor-extension-registrar';
-import type { EditorSuggestRegistrar } from 'obsidian-dev-utils/obsidian/editor-suggest-registrar';
-import type { ExtensionsRegistrar } from 'obsidian-dev-utils/obsidian/extensions-registrar';
-import type { HoverLinkSourceRegistrar } from 'obsidian-dev-utils/obsidian/hover-link-source-registrar';
-import type { MarkdownCodeBlockProcessorRegistrar } from 'obsidian-dev-utils/obsidian/markdown-code-block-processor-registrar';
-import type { MarkdownPostProcessorRegistrar } from 'obsidian-dev-utils/obsidian/markdown-post-processor-registrar';
-import type { ObsidianProtocolHandlerRegistrar } from 'obsidian-dev-utils/obsidian/obsidian-protocol-handler-registrar';
-import type { RibbonIconRegistrar } from 'obsidian-dev-utils/obsidian/ribbon-icon-registrar';
-import type { StatusBarItemRegistrar } from 'obsidian-dev-utils/obsidian/status-bar-item-registrar';
-import type { ViewRegistrar } from 'obsidian-dev-utils/obsidian/view-registrar';
 import type { Mock } from 'vitest';
 
-import { castTo } from 'obsidian-dev-utils/object-utils';
-import { strictProxy } from 'obsidian-dev-utils/strict-proxy';
+import { castTo } from '@mnaoumov/typescript-lib/object-utils';
+import { strictProxy } from '@mnaoumov/typescript-test-toolkit/strict-proxy';
 import {
   App,
   WorkspaceLeaf
@@ -40,23 +40,23 @@ import { SAMPLE_REACT_VIEW_TYPE } from './views/sample-react-view.tsx';
 import { SAMPLE_SVELTE_VIEW_TYPE } from './views/sample-svelte-view.ts';
 import { SAMPLE_VIEW_TYPE } from './views/sample-view.ts';
 
-vi.mock('obsidian-dev-utils/obsidian/modals/alert', async (importOriginal) => ({
-  ...await importOriginal<typeof import('obsidian-dev-utils/obsidian/modals/alert')>(),
+vi.mock('@mnaoumov/obsidian-lib/modals/alert', async (importOriginal) => ({
+  ...await importOriginal<typeof import('@mnaoumov/obsidian-lib/modals/alert')>(),
   alert: vi.fn<() => Promise<void>>().mockResolvedValue(undefined)
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/modals/confirm', async (importOriginal) => ({
-  ...await importOriginal<typeof import('obsidian-dev-utils/obsidian/modals/confirm')>(),
+vi.mock('@mnaoumov/obsidian-lib/modals/confirm', async (importOriginal) => ({
+  ...await importOriginal<typeof import('@mnaoumov/obsidian-lib/modals/confirm')>(),
   confirm: vi.fn<() => Promise<boolean>>().mockResolvedValue(true)
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/modals/prompt', async (importOriginal) => ({
-  ...await importOriginal<typeof import('obsidian-dev-utils/obsidian/modals/prompt')>(),
+vi.mock('@mnaoumov/obsidian-lib/modals/prompt', async (importOriginal) => ({
+  ...await importOriginal<typeof import('@mnaoumov/obsidian-lib/modals/prompt')>(),
   prompt: vi.fn<() => Promise<void>>().mockResolvedValue(undefined)
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/modals/select-item', async (importOriginal) => ({
-  ...await importOriginal<typeof import('obsidian-dev-utils/obsidian/modals/select-item')>(),
+vi.mock('@mnaoumov/obsidian-lib/modals/select-item', async (importOriginal) => ({
+  ...await importOriginal<typeof import('@mnaoumov/obsidian-lib/modals/select-item')>(),
   selectItem: vi.fn<() => Promise<void>>().mockResolvedValue(undefined)
 }));
 
@@ -79,19 +79,19 @@ vi.mock('react-dom/client', () => ({
   createRoot: vi.fn(() => ({ render: vi.fn(), unmount: vi.fn() }))
 }));
 
-vi.mock('obsidian-dev-utils/obsidian/react/app-context', () => ({
+vi.mock('@mnaoumov/obsidian-lib/react/app-context', () => ({
   AppContext: { Provider: vi.fn() },
   useApp: vi.fn(() => ({ vault: { getName: vi.fn(() => 'TestVault') } }))
 }));
 
 // eslint-disable-next-line import-x/first, import-x/imports-first -- vi.mock must precede imports.
-import { alert as mockAlert } from 'obsidian-dev-utils/obsidian/modals/alert';
+import { alert as mockAlert } from '@mnaoumov/obsidian-lib/modals/alert';
 // eslint-disable-next-line import-x/first, import-x/imports-first -- vi.mock must precede imports.
-import { confirm as mockConfirm } from 'obsidian-dev-utils/obsidian/modals/confirm';
+import { confirm as mockConfirm } from '@mnaoumov/obsidian-lib/modals/confirm';
 // eslint-disable-next-line import-x/first, import-x/imports-first -- vi.mock must precede imports.
-import { prompt as mockPrompt } from 'obsidian-dev-utils/obsidian/modals/prompt';
+import { prompt as mockPrompt } from '@mnaoumov/obsidian-lib/modals/prompt';
 // eslint-disable-next-line import-x/first, import-x/imports-first -- vi.mock must precede imports.
-import { selectItem as mockSelectItem } from 'obsidian-dev-utils/obsidian/modals/select-item';
+import { selectItem as mockSelectItem } from '@mnaoumov/obsidian-lib/modals/select-item';
 
 // eslint-disable-next-line import-x/first, import-x/imports-first -- vi.mock must precede imports.
 import { SamplePluginExtendedComponent } from './sample-plugin-extended-component.ts';

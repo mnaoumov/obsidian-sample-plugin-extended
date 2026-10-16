@@ -42,7 +42,7 @@ Manual equivalent: run the Command Palette entry of the same name. **Sample edit
 
 ## Modals
 
-These commands open the modal helpers shipped by `obsidian-dev-utils`:
+These commands open the modal helpers shipped by `@mnaoumov/obsidian-lib`:
 
 - **Show sample modal**
   - a bare modal that displays `Sample modal`.

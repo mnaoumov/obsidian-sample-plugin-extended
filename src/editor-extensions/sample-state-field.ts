@@ -1,6 +1,6 @@
 import type { Extension } from '@codemirror/state';
 import type { DecorationSet } from '@codemirror/view';
-import type { StateFieldSpec } from 'obsidian-dev-utils/codemirror/state-field-spec';
+import type { StateFieldSpec } from '@mnaoumov/obsidian-lib/codemirror/state-field-spec';
 
 import { syntaxTree } from '@codemirror/language';
 import {

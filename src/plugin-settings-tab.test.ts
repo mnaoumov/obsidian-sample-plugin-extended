@@ -1,22 +1,22 @@
+import type { PluginNoticeComponent } from '@mnaoumov/obsidian-lib/components/plugin-notice-component';
+import type { PluginSettingsComponentBase } from '@mnaoumov/obsidian-lib/components/plugin-settings-component';
 import type {
   App as AppOriginal,
   Plugin,
   SettingGroup
 } from 'obsidian';
-import type { PluginNoticeComponent } from 'obsidian-dev-utils/obsidian/components/plugin-notice-component';
-import type { PluginSettingsComponentBase } from 'obsidian-dev-utils/obsidian/components/plugin-settings-component';
 import type { MockInstance } from 'vitest';
 
+import { PluginSettingsTabBase } from '@mnaoumov/obsidian-lib/plugin/plugin-settings-tab';
+import { FileComponent } from '@mnaoumov/obsidian-lib/setting-components/file-component';
+import { MultipleFileComponent } from '@mnaoumov/obsidian-lib/setting-components/multiple-file-component';
+import { SettingEx } from '@mnaoumov/obsidian-lib/setting-ex';
+import { castTo } from '@mnaoumov/typescript-lib/object-utils';
+import { strictProxy } from '@mnaoumov/typescript-test-toolkit/strict-proxy';
 import {
   ButtonComponent,
   ExtraButtonComponent
 } from 'obsidian';
-import { castTo } from 'obsidian-dev-utils/object-utils';
-import { PluginSettingsTabBase } from 'obsidian-dev-utils/obsidian/plugin/plugin-settings-tab';
-import { FileComponent } from 'obsidian-dev-utils/obsidian/setting-components/file-component';
-import { MultipleFileComponent } from 'obsidian-dev-utils/obsidian/setting-components/multiple-file-component';
-import { SettingEx } from 'obsidian-dev-utils/obsidian/setting-ex';
-import { strictProxy } from 'obsidian-dev-utils/strict-proxy';
 import { App } from 'obsidian-test-mocks/obsidian';
 import {
   beforeEach,

@@ -20,12 +20,12 @@ A copy of the vault ships with every release. You can access it via any of the f
 
 ## What it demonstrates
 
-- **Commands, ribbon icon, status bar and the `obsidian-dev-utils` modals** — plain, editor-scoped and checked commands, plus alert, confirm, prompt and select-item dialogs. [01 Commands and modals](<./demo-vault/01 Commands and modals.md>)
+- **Commands, ribbon icon, status bar and the `@mnaoumov/obsidian-lib` modals** — plain, editor-scoped and checked commands, plus alert, confirm, prompt and select-item dialogs. [01 Commands and modals](<./demo-vault/01 Commands and modals.md>)
 - **Editor and renderer extensions** — an editor suggest, a CodeMirror widget, a code-block processor, a Markdown post-processor and an `obsidian://` protocol handler. [02 Editor features](<./demo-vault/02 Editor features.md>)
 - **Custom views** — the same side view built three ways: a plain `ItemView`, a [Svelte](https://svelte.dev/) component and a [React](https://react.dev/) component. [03 Views](<./demo-vault/03 Views.md>)
 - **A settings tab covering every `SettingEx` component** — text, numbers, toggles, dropdowns, dates and colors, each with the key it stores. [04 Settings](<./demo-vault/04 Settings.md>)
 
-Around the samples sits the toolchain a released plugin needs: TypeScript build, unit and integration tests, ESLint, dprint, cspell, and the release scripts from [`obsidian-dev-utils`](https://github.com/mnaoumov/obsidian-dev-utils).
+Around the samples sits the toolchain a released plugin needs: TypeScript build, unit and integration tests, ESLint, dprint, cspell, and the release scripts from [`@mnaoumov/obsidian-dev-toolkit`](https://github.com/mnaoumov/obsidian-dev-toolkit).
 
 ## Installation
 

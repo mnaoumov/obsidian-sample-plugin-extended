@@ -1,3 +1,16 @@
+import type { CommandRegistrar } from '@mnaoumov/obsidian-lib/command-registrar';
+import type { PluginNoticeComponent } from '@mnaoumov/obsidian-lib/components/plugin-notice-component';
+import type { EditorExtensionRegistrar } from '@mnaoumov/obsidian-lib/editor-extension-registrar';
+import type { EditorSuggestRegistrar } from '@mnaoumov/obsidian-lib/editor-suggest-registrar';
+import type { ExtensionsRegistrar } from '@mnaoumov/obsidian-lib/extensions-registrar';
+import type { HoverLinkSourceRegistrar } from '@mnaoumov/obsidian-lib/hover-link-source-registrar';
+import type { MarkdownCodeBlockProcessorRegistrar } from '@mnaoumov/obsidian-lib/markdown-code-block-processor-registrar';
+import type { MarkdownPostProcessorRegistrar } from '@mnaoumov/obsidian-lib/markdown-post-processor-registrar';
+import type { ObsidianProtocolHandlerRegistrar } from '@mnaoumov/obsidian-lib/obsidian-protocol-handler-registrar';
+import type { RibbonIconRegistrar } from '@mnaoumov/obsidian-lib/ribbon-icon-registrar';
+import type { StatusBarItemRegistrar } from '@mnaoumov/obsidian-lib/status-bar-item-registrar';
+import type { ViewRegistrar } from '@mnaoumov/obsidian-lib/view-registrar';
+import type { MaybeReturn } from '@mnaoumov/typescript-lib/type';
 import type {
   App,
   Editor,
@@ -5,28 +18,15 @@ import type {
   ObsidianProtocolData,
   TAbstractFile
 } from 'obsidian';
-import type { CommandRegistrar } from 'obsidian-dev-utils/obsidian/command-registrar';
-import type { PluginNoticeComponent } from 'obsidian-dev-utils/obsidian/components/plugin-notice-component';
-import type { EditorExtensionRegistrar } from 'obsidian-dev-utils/obsidian/editor-extension-registrar';
-import type { EditorSuggestRegistrar } from 'obsidian-dev-utils/obsidian/editor-suggest-registrar';
-import type { ExtensionsRegistrar } from 'obsidian-dev-utils/obsidian/extensions-registrar';
-import type { HoverLinkSourceRegistrar } from 'obsidian-dev-utils/obsidian/hover-link-source-registrar';
-import type { MarkdownCodeBlockProcessorRegistrar } from 'obsidian-dev-utils/obsidian/markdown-code-block-processor-registrar';
-import type { MarkdownPostProcessorRegistrar } from 'obsidian-dev-utils/obsidian/markdown-post-processor-registrar';
-import type { ObsidianProtocolHandlerRegistrar } from 'obsidian-dev-utils/obsidian/obsidian-protocol-handler-registrar';
-import type { RibbonIconRegistrar } from 'obsidian-dev-utils/obsidian/ribbon-icon-registrar';
-import type { StatusBarItemRegistrar } from 'obsidian-dev-utils/obsidian/status-bar-item-registrar';
-import type { ViewRegistrar } from 'obsidian-dev-utils/obsidian/view-registrar';
-import type { MaybeReturn } from 'obsidian-dev-utils/type';
 
+import { LayoutReadyComponent } from '@mnaoumov/obsidian-lib/components/layout-ready-component';
+import { alert } from '@mnaoumov/obsidian-lib/modals/alert';
+import { confirm } from '@mnaoumov/obsidian-lib/modals/confirm';
+import { prompt } from '@mnaoumov/obsidian-lib/modals/prompt';
+import { selectItem } from '@mnaoumov/obsidian-lib/modals/select-item';
+import { convertAsyncToSync } from '@mnaoumov/typescript-lib/async';
+import { getDebugger } from '@mnaoumov/typescript-lib/debug';
 import { MarkdownView } from 'obsidian';
-import { convertAsyncToSync } from 'obsidian-dev-utils/async';
-import { getDebugger } from 'obsidian-dev-utils/debug';
-import { LayoutReadyComponent } from 'obsidian-dev-utils/obsidian/components/layout-ready-component';
-import { alert } from 'obsidian-dev-utils/obsidian/modals/alert';
-import { confirm } from 'obsidian-dev-utils/obsidian/modals/confirm';
-import { prompt } from 'obsidian-dev-utils/obsidian/modals/prompt';
-import { selectItem } from 'obsidian-dev-utils/obsidian/modals/select-item';
 
 import { sampleStateField } from './editor-extensions/sample-state-field.ts';
 import { sampleViewPlugin } from './editor-extensions/sample-view-plugin.ts';
