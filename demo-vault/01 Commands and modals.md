@@ -6,11 +6,11 @@
 
 Open the Command Palette (`Ctrl/Cmd + P`) and run any of these:
 
-- **Sample Plugin Extended: Sample**
+- **`Sample Plugin Extended`: Sample**
   - shows a `Sample command` notice.
-- **Sample Plugin Extended: Sample editor**
+- **`Sample Plugin Extended`: Sample editor**
   - inserts the text `Sample Editor Command` at the cursor (works only while editing a note).
-- **Sample Plugin Extended: Sample with check**
+- **`Sample Plugin Extended`: Sample with check**
   - a *checked* command: it is only available when a Markdown note is the active view. Open this note in editing mode, then run it to see the `Sample command with check` notice.
 
 ## Ribbon icon and status bar

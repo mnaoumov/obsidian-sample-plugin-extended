@@ -14,7 +14,7 @@ This is a **template plugin** for [Obsidian](https://obsidian.md/) with all of t
 
 A copy of the vault ships with every release. You can access it via any of the following:
 
-1. Running the **Sample Plugin Extended: Open demo vault** command.
+1. Running the **`Sample Plugin Extended`: Open demo vault** command.
 2. Downloading `sample-plugin-extended-demo-vault.zip` from the [Releases](https://github.com/mnaoumov/obsidian-sample-plugin-extended/releases). It unzips into a single `sample-plugin-extended-demo-vault-<version>` folder.
 3. Browsing its source in [`demo-vault/`](./demo-vault/README.md) in this repository.
 
