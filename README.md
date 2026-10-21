@@ -57,7 +57,7 @@ window.DEBUG.enable('sample-plugin-extended');
 
 Replace `sample-plugin-extended` with your own plugin id once you have renamed it.
 
-For more details, refer to the [documentation](https://mnaoumov.dev/obsidian-dev-utils/guides/debugging/).
+For more details, refer to the [documentation](https://mnaoumov.dev/obsidian-lib/guides/debugging/).
 
 ## Contributing
 

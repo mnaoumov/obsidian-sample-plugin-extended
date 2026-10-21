@@ -48,7 +48,7 @@ vi.mock('@mnaoumov/obsidian-lib/active-file-provider', () => ({
   AppActiveFileProvider: vi.fn()
 }));
 
-// `PluginDataHandler` and `PluginEventSourceImpl` are NOT stubbed: since obsidian-dev-utils 93.2 the base
+// `PluginDataHandler` and `PluginEventSourceImpl` are NOT stubbed: the base
 // builds its own settings component out of them during `onload`, and that component really calls
 // `pluginEventSource.on`, so a bare `vi.fn()` double makes the base throw before `onloadImpl` runs.
 
@@ -164,7 +164,7 @@ describe('Plugin', () => {
     const plugin = new Plugin(app.asOriginalType__(), manifest);
     await plugin.onload();
 
-    // Since obsidian-dev-utils 89.0.0 the handlers are built lazily by a factory, and the base registers
+    // The handlers are built lazily by a factory, and the base registers
     // its own batch through the same spy - so build every batch and look across them.
     const commandHandlers = registerCommandHandlers.mock.calls
       .flatMap(([commandHandlerFactory]) => castTo<() => unknown[]>(commandHandlerFactory)());
