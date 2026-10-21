@@ -45,19 +45,11 @@ Then delete the `.template` marker file from the repository root. While it exist
 
 ## Debugging
 
-By default, debug messages for this plugin are hidden.
-
-To show them, install [`Advanced Debug Mode`](https://community.obsidian.md/plugins/advanced-debug-mode), run **`Advanced Debug Mode`: Open plugin debug messages** and tick `Sample Plugin Extended`. To flip only this plugin, run **`Advanced Debug Mode`: Toggle debug messages for a plugin...** and pick `Sample Plugin Extended`.
-
-Without `Advanced Debug Mode`, run the following command in the `DevTools Console`:
-
-```js
-window.DEBUG.enable('sample-plugin-extended');
-```
+By default, debug messages for this plugin (id: `sample-plugin-extended`) are hidden.
 
 Replace `sample-plugin-extended` with your own plugin id once you have renamed it.
 
-For more details, refer to the [documentation](https://mnaoumov.dev/obsidian-lib/guides/debugging/).
+If you need to enable them refer to the [documentation](https://mnaoumov.dev/obsidian-lib/guides/debugging/).
 
 ## Contributing
 
