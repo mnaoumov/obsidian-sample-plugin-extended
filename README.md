@@ -47,7 +47,9 @@ Then delete the `.template` marker file from the repository root. While it exist
 
 By default, debug messages for this plugin are hidden.
 
-To show them, run the following command in the `DevTools Console`:
+To show them, install [`Advanced Debug Mode`](https://community.obsidian.md/plugins/advanced-debug-mode), run **`Advanced Debug Mode`: Open plugin debug messages** and tick `Sample Plugin Extended`. To flip only this plugin, run **`Advanced Debug Mode`: Toggle debug messages for a plugin...** and pick `Sample Plugin Extended`.
+
+Without `Advanced Debug Mode`, run the following command in the `DevTools Console`:
 
 ```js
 window.DEBUG.enable('sample-plugin-extended');
