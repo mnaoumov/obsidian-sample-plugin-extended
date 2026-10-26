@@ -27,6 +27,12 @@ A copy of the vault ships with every release. You can access it via any of the f
 
 Around the samples sits the toolchain a released plugin needs: TypeScript build, unit and integration tests, ESLint, dprint, cspell, and the release scripts from [`@mnaoumov/obsidian-dev-toolkit`](https://github.com/mnaoumov/obsidian-dev-toolkit).
 
+## Similar plugins
+
+- [`Obsidian Sample Plugin`](https://github.com/obsidianmd/obsidian-sample-plugin) — the official minimal template this one extends: one command, a modal and a settings tab with no dependencies, where this one adds working samples of views, editor extensions and settings components plus the test, lint and release toolchain.
+
+Last searched for similar plugins on 2026-10-26.
+
 ## Installation
 
 This is a template to start a plugin **from**, not a plugin to install into a vault. Two ways to use it:
