@@ -24,7 +24,9 @@ interface PluginSettingsComponentConstructorParams {
 type PluginSettingsComponentOnSaveSettingsParams = PluginSettingsComponentBaseOnSaveSettingsParams<PluginSettings>;
 
 interface SerializedSettings {
+  // eslint-disable-next-line typescript-dev-toolkit/readonly-interface-members -- Saving converts the in-place record to serialized setting values.
   typedDropdownSetting: string;
+  // eslint-disable-next-line typescript-dev-toolkit/readonly-interface-members -- Saving converts the in-place record to serialized setting values.
   typedMultipleDropdownSetting: string[];
 }
 

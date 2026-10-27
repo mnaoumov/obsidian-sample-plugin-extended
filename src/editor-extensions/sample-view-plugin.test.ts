@@ -7,12 +7,12 @@ import {
 } from 'vitest';
 
 interface MockBuilder {
-  add: (from: number, to: number, decoration: unknown) => void;
-  finish: () => MockDecorationSet;
+  readonly add: (from: number, to: number, decoration: unknown) => void;
+  readonly finish: () => MockDecorationSet;
 }
 
 interface MockDecoration {
-  range: (from: number, to: number) => unknown;
+  readonly range: (from: number, to: number) => unknown;
 }
 
 interface MockDecorationSet {
@@ -20,8 +20,8 @@ interface MockDecorationSet {
 }
 
 interface MockEditorView {
-  state: MockState;
-  visibleRanges: MockVisibleRange[];
+  readonly state: MockState;
+  readonly visibleRanges: MockVisibleRange[];
 }
 
 interface MockIterateParams {
@@ -29,50 +29,50 @@ interface MockIterateParams {
 }
 
 interface MockNode {
-  from: number;
-  type: MockNodeType;
+  readonly from: number;
+  readonly type: MockNodeType;
 }
 
 interface MockNodeType {
-  name: string;
+  readonly name: string;
 }
 
 interface MockPluginCapture {
-  pluginClass: new (view: MockEditorView) => unknown;
-  spec: unknown;
+  readonly pluginClass: new (view: MockEditorView) => unknown;
+  readonly spec: unknown;
 }
 
 interface MockPluginInstance {
-  update: (u: MockViewUpdate) => void;
+  readonly update: (u: MockViewUpdate) => void;
 }
 
 interface MockPluginSpec {
-  decorations: (value: MockPluginWithDecorations) => string;
+  readonly decorations: (value: MockPluginWithDecorations) => string;
 }
 
 interface MockPluginWithDecorations {
-  decorations: string;
+  readonly decorations: string;
 }
 
 interface MockSpecCapture {
-  spec: unknown;
+  readonly spec: unknown;
 }
 
 type MockState = object;
 
 interface MockTree {
-  iterate: (params: MockIterateParams) => void;
+  readonly iterate: (params: MockIterateParams) => void;
 }
 
 interface MockViewUpdate {
-  docChanged: boolean;
-  view: MockEditorView;
-  viewportChanged: boolean;
+  readonly docChanged: boolean;
+  readonly view: MockEditorView;
+  readonly viewportChanged: boolean;
 }
 
 interface MockVisibleRange {
-  from: number;
-  to: number;
+  readonly from: number;
+  readonly to: number;
 }
 
 const mockDecorationSet: MockDecorationSet = { _type: 'decorationSet' };

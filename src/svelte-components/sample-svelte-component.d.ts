@@ -1,7 +1,7 @@
 export interface SampleSvelteComponentExports {
-  increment: () => void;
+  readonly increment: () => void;
 }
 
 export interface SampleSvelteComponentProps {
-  startCount: number;
+  readonly startCount: number;
 }

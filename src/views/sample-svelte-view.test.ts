@@ -16,7 +16,7 @@ interface MockMountOptions {
 }
 
 interface MockMountProps {
-  startCount: number;
+  readonly startCount: number;
 }
 
 const hoisted = vi.hoisted(() => {
