@@ -27,9 +27,13 @@ A copy of the vault ships with every release. You can access it via any of the f
 
 Around the samples sits the toolchain a released plugin needs: TypeScript build, unit and integration tests, ESLint, dprint, cspell, and the release scripts from [`@mnaoumov/obsidian-dev-toolkit`](https://github.com/mnaoumov/obsidian-dev-toolkit).
 
-## Similar plugins
+## See also
 
-- [`Obsidian Sample Plugin`](https://github.com/obsidianmd/obsidian-sample-plugin) — the official minimal template this one extends: one command, a modal and a settings tab with no dependencies, where this one adds working samples of views, editor extensions and settings components plus the test, lint and release toolchain.
+[My other Obsidian resources](https://github.com/mnaoumov/obsidian-resources)
+
+| Plugin | Features | How `Sample Plugin Extended` differs |
+| --- | --- | --- |
+| [`Obsidian Sample Plugin`](https://github.com/obsidianmd/obsidian-sample-plugin) | Official minimal template; command, modal and settings tab; no dependencies | Extends `Obsidian Sample Plugin`; adds views, editor extensions, settings components and test/lint/release tooling |
 
 Last searched for similar plugins on 2026-10-26.
 
@@ -68,10 +72,6 @@ Contributions are welcome — see [CONTRIBUTING](./CONTRIBUTING.md) to get set u
 <a href="https://www.buymeacoffee.com/mnaoumov" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="60" width="217"></a>
 
 <!-- markdownlint-enable MD033 -->
-
-## My other Obsidian resources
-
-[See my other Obsidian resources](https://github.com/mnaoumov/obsidian-resources).
 
 ## License
 
