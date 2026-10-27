@@ -97,19 +97,19 @@ import { selectItem as mockSelectItem } from '@mnaoumov/obsidian-lib/modals/sele
 import { SamplePluginExtendedComponent } from './sample-plugin-extended-component.ts';
 
 interface CheckCommand extends Command {
-  checkCallback: (isChecking: boolean) => boolean;
+  readonly checkCallback: (isChecking: boolean) => boolean;
 }
 
 interface EditorCommand extends Command {
-  editorCallback: (editor: EditorForCommand) => void;
+  readonly editorCallback: (editor: EditorForCommand) => void;
 }
 
 interface EditorForCommand {
-  replaceSelection: (text: string) => void;
+  readonly replaceSelection: (text: string) => void;
 }
 
 interface LayoutReadyComponentInternals {
-  onLayoutReady: () => Promise<void>;
+  readonly onLayoutReady: () => Promise<void>;
 }
 
 interface PromptParams {
@@ -121,7 +121,9 @@ interface PromptParams {
 // callback we need to capture, so they are seeded with a `vi.fn` before `onload()` to
 // capture the really-registered callbacks.
 interface SeedableComponent {
+  // eslint-disable-next-line typescript-dev-toolkit/readonly-interface-members -- The fixture replaces this inherited method with a recording spy.
   registerDomEvent: ReturnType<typeof vi.fn>;
+  // eslint-disable-next-line typescript-dev-toolkit/readonly-interface-members -- The fixture replaces this inherited method with a recording spy.
   registerInterval: ReturnType<typeof vi.fn>;
 }
 

@@ -4,7 +4,7 @@ import { useApp } from '@mnaoumov/obsidian-lib/react/app-context';
 import { useState } from 'react';
 
 export interface SampleReactComponentProps {
-  startCount: number;
+  readonly startCount: number;
 }
 
 export function SampleReactComponent(props: SampleReactComponentProps): JSX.Element {
