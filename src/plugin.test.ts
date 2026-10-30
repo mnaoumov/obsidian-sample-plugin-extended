@@ -1,5 +1,6 @@
 import type { PluginManifest } from 'obsidian';
 
+import { OpenBugReportCommandHandler } from '@mnaoumov/obsidian-lib/command-handlers/open-bug-report-command-handler';
 import { OpenDemoVaultCommandHandler } from '@mnaoumov/obsidian-lib/command-handlers/open-demo-vault-command-handler';
 import { PluginNoticeComponent } from '@mnaoumov/obsidian-lib/components/plugin-notice-component';
 import { PluginSettingsTabComponent } from '@mnaoumov/obsidian-lib/components/plugin-settings-tab-component';
@@ -160,7 +161,7 @@ describe('Plugin', () => {
     expect(SamplePluginExtendedComponent).toHaveBeenCalledOnce();
   });
 
-  it('should register the open demo vault command handler', async () => {
+  it('should register the report bug and open demo vault command handlers', async () => {
     const plugin = new Plugin(app.asOriginalType__(), manifest);
     await plugin.onload();
 
@@ -168,7 +169,7 @@ describe('Plugin', () => {
     // its own batch through the same spy - so build every batch and look across them.
     const commandHandlers = registerCommandHandlers.mock.calls
       .flatMap(([commandHandlerFactory]) => castTo<() => unknown[]>(commandHandlerFactory)());
-    expect(commandHandlers).toEqual(expect.arrayContaining([expect.any(OpenDemoVaultCommandHandler)]));
+    expect(commandHandlers).toEqual(expect.arrayContaining([expect.any(OpenBugReportCommandHandler), expect.any(OpenDemoVaultCommandHandler)]));
   });
 
   it('should show a notice on unload', async () => {
