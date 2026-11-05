@@ -8,9 +8,9 @@ When the plugin finishes loading, it opens all three views in the **right sideba
 
 - **Sample view**
   - a plain `ItemView` that renders a heading.
-- **Sample svelte view**
+- **Sample `Svelte` view**
   - the same idea implemented with a [Svelte](https://svelte.dev/) component.
-- **Sample react view**
+- **Sample `React` view**
   - implemented with a [React](https://react.dev/) component.
 
 On first load you will also see a `This is executed after all plugins are loaded` notice - that is the plugin's *layout ready* hook firing once Obsidian has finished starting up.
