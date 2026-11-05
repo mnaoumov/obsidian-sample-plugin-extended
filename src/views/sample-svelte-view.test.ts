@@ -9,8 +9,6 @@ import {
   vi
 } from 'vitest';
 
-type MockMountCall = [unknown, MockMountOptions];
-
 interface MockMountOptions {
   readonly props: MockMountProps;
 }
@@ -100,6 +98,7 @@ describe('SampleSvelteView', () => {
   });
 
   it('should pass startCount of 10 to svelte component', async () => {
+    type MockMountCall = [unknown, MockMountOptions];
     hoisted.mockMount.mockClear();
     const view = createView();
     await view.onOpen();

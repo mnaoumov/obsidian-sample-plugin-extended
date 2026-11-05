@@ -10,7 +10,7 @@ This is a **template plugin** for [Obsidian](https://obsidian.md/) with all of t
 
 **The documentation is a demo vault.** Every sample feature has a note that explains what it does and how it is wired, so you can see each building block working before you start deleting.
 
-**[Start reading here](<./demo-vault/00 Start.md>)** — it is plain markdown, so it works on GitHub with nothing installed.
+**[Start reading here](<./demo-vault/00 Start.md>)** — it is plain markdown, so it works on `GitHub` with nothing installed.
 
 A copy of the vault ships with every release. You can access it via any of the following:
 
@@ -25,7 +25,7 @@ A copy of the vault ships with every release. You can access it via any of the f
 - **Custom views** — the same side view built three ways: a plain `ItemView`, a [Svelte](https://svelte.dev/) component and a [React](https://react.dev/) component. [03 Views](<./demo-vault/03 Views.md>)
 - **A settings tab covering every `SettingEx` component** — text, numbers, toggles, dropdowns, dates and colors, each with the key it stores. [04 Settings](<./demo-vault/04 Settings.md>)
 
-Around the samples sits the toolchain a released plugin needs: TypeScript build, unit and integration tests, ESLint, dprint, cspell, and the release scripts from [`@mnaoumov/obsidian-dev-toolkit`](https://github.com/mnaoumov/obsidian-dev-toolkit).
+Around the samples sits the toolchain a released plugin needs: TypeScript build, unit and integration tests, `ESLint`, `dprint`, `cspell`, and the release scripts from [`@mnaoumov/obsidian-dev-toolkit`](https://github.com/mnaoumov/obsidian-dev-toolkit).
 
 ## See also
 
